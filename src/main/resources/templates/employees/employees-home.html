@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head th:replace="layouts :: header">
+
+<body>
+
+<nav th:replace="layouts :: navbar"></nav>
+
+<div>
+    <h4>Employees:</h4><br>
+    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/employees/new}" class="btn btn-primary">New Employee</a>
+    <table class="table table-bordered table-stripped">
+        <thead class="thead-dark">
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Projects</th>
+        <th>Action</th>
+        </thead>
+        <tbody>
+        <tr th:each="e : ${employeesList}">
+            <td th:text="${e.firstName}" />
+            <td th:text="${e.lastName}" />
+            <td th:text="${e.email}" />
+            <td><span th:each="p : ${e.projects}" th:text="${p.name}"></span></td>
+            <td>
+                <a th:href="@{/employees/update(id=${e.employeeId})}" class="btn btn-info btn-sm">Update</a>
+                <a th:href="@{/employees/delete(id=${e.employeeId})}"
+                   class="btn btn-danger btn-sm" onclick="if(!(confirm('Sure you wanna delete ?'))) return false">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+
+</html>

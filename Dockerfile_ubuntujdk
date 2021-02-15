@@ -1,0 +1,3 @@
+FROM ubuntu:latest
+MAINTAINER tomas chovanec "tomasnt4@gmail.com"
+RUN apt-get update && apt-get install -y openjdk-8-jdk
