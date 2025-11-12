@@ -1,5 +1,6 @@
 package com.pma.controllers;
 
+import com.pma.dao.IEmployeeRepository;
 import com.pma.entities.Employee;
 import com.pma.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class EmployeeController
 {
     @Autowired
     EmployeeService empService;
+
+    @Autowired
+    IEmployeeRepository emprepo;
 
     @GetMapping
     public String display(Model model){
@@ -47,6 +51,9 @@ public class EmployeeController
 
     @PostMapping("/save")
     public String createEmployee(Model model, @Valid Employee emp, Errors errors){
+        if(emprepo.findByEmail(emp.getEmail()) != null)
+            errors.rejectValue("email", "error.emp", "Email is already in use.");
+
         if(errors.hasErrors())
             return "employees/new-employee";
 

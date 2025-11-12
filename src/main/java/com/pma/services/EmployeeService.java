@@ -3,6 +3,7 @@ package com.pma.services;
 import com.pma.dao.IEmployeeRepository;
 import com.pma.entities.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,6 +11,8 @@ public class EmployeeService
 {
     @Autowired
     IEmployeeRepository empRepo;
+    @Autowired
+    private RestTemplateAutoConfiguration restTemplateAutoConfiguration;
 
     public Iterable<Employee> findAll(){
         return empRepo.findAll();

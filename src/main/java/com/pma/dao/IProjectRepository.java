@@ -16,7 +16,7 @@ public interface IProjectRepository extends PagingAndSortingRepository<Project, 
     List<Project> findAll();
 
     @Query(nativeQuery = true, value=
-            "SELECT stage as label, COUNT(*) as value " +
+            "SELECT stage as label, COUNT(*) as \"value\" " +
             "FROM project " +
             "GROUP BY stage")
     List<ChartData> getProjectStageCount();

@@ -1,6 +1,8 @@
 package com.pma.controllers;
 
-import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +11,14 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class AppErrorController implements ErrorController
+public class AppErrorController extends BasicErrorController
 {
+
+    public AppErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties)
+    {
+        super(errorAttributes, errorProperties);
+    }
+
     @GetMapping("/error")
     public String handleError(HttpServletRequest request){
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
@@ -32,8 +40,7 @@ public class AppErrorController implements ErrorController
         return "errorpages/error";
     }
 
-    @Override
-    public String getErrorPath(){
-        return "/error";
-    }
+//    public String getErrorPath(){
+//        return "/error";
+//    }
 }

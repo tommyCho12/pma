@@ -48,6 +48,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
                 .formLogin()
         ;
 
-//        http.csrf().disable();
+        http
+            .authorizeRequests()
+            .antMatchers("/h2-console/**").permitAll() // allow H2 console
+            .anyRequest().authenticated()
+            .and()
+            .csrf().disable() // disable CSRF for H2 console
+            .headers().frameOptions().disable()
+        ; // allow frames for H2 console
+
+        //        http.csrf().disable();
     }
 }

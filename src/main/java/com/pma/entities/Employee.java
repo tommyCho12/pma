@@ -25,7 +25,7 @@ public class Employee
 
     @NotBlank(message = "*Must have valid email!")
     @Email
-    @UniqueValue
+//    @UniqueValue //to use validators.UniqueValidator instead of controller level validation
     private String email;
 
     @SuppressWarnings("JpaDataSourceORMInspection")
