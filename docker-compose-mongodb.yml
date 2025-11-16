@@ -1,0 +1,12 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: mongoDBcontainer
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db  # Use Docker volume instead of Windows path
+    restart: unless-stopped
+
+volumes:
+  mongodb-data:

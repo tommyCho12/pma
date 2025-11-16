@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="layouts :: header">
+    <link rel="document_home_styles.css">
+</head>
+
+<body>
+
+<nav th:replace="layouts :: navbar"></nav>
+
+<div>
+    <h4>Documents:</h4><br>
+<!--    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/documents/new}" class="btn btn-primary">New Project</a>-->
+    <a th:href="@{/documents/new}" class="btn btn-primary">Add Document</a>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input
+                type="text"
+                id="searchInput"
+                class="form-control search-input"
+                placeholder="Search documents by title or content..."
+                autocomplete="off"
+        >
+        <div class="loading-spinner spinner-border spinner-border-sm text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Results Count -->
+    <div id="resultsCount" class="results-count"></div>
+
+    <!-- Documents Table -->
+    <div id="documentsTableContainer">
+        <table class="table table-hover" id="documentsTable">
+            <thead class="table-light">
+            <tr>
+                <th style="width: 15%">Document ID</th>
+                <th style="width: 25%">Title</th>
+                <th style="width: 40%">Content Preview</th>
+                <th style="width: 20%">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="documentsBody">
+            <!-- Documents will be loaded here -->
+            </tbody>
+        </table>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="no-results" style="display: none;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+            <h5>No documents found</h5>
+            <p>Try a different search term or create a new document.</p>
+        </div>
+    </div>
+
+
+<!--    <table class="table table-bordered table-stripped">-->
+<!--        <thead class="thead-dark">-->
+<!--        <th>Title</th>-->
+<!--        <th>Content</th>-->
+<!--        <th>Actions</th>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="d : ${documentList}">-->
+<!--            <td th:text="${d.title}" />-->
+<!--            <td th:text="${d.content}" />-->
+<!--            <td>-->
+<!--                <a th:href="@{/documents/update(id=${d.id})}" class="btn btn-info btn-sm">Update</a>-->
+<!--                <a th:href="@{/documents/delete(id=${d.id})}"-->
+<!--                   class="btn btn-danger btn-sm" onclick="if(!(confirm('Sure you wanna delete ?'))) return false">Delete</a>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+</div>
+<div th:replace="layouts :: footer"></div>
+
+<script th:src="@{/js/documentSearch.js}"></script>
+
+</body>
+
+</html>
