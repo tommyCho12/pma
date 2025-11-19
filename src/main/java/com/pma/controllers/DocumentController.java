@@ -21,6 +21,7 @@ public class DocumentController
 
     @Autowired
     IDocumentRepository documentRepository;
+
     @Autowired
     private RestTemplateAutoConfiguration restTemplateAutoConfiguration;
 
@@ -30,6 +31,15 @@ public class DocumentController
         model.addAttribute("documentList", documents);
 
         return "documents/documents-home";
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewDocument(@PathVariable("id") String id, Model model) {
+        Document document = documentService.findById(id)
+            .orElseThrow(() -> new RuntimeException("Document not found with id: " + id));
+
+        model.addAttribute("document", document);
+        return "documents/document-view";
     }
 
     @GetMapping("/new")

@@ -99,6 +99,11 @@ function displayDocuments(documents, keyword = '') {
 function createDocumentRow(doc, keyword = '') {
     const row = document.createElement('tr');
     row.className = 'document-row';
+    row.style.cursor = 'pointer';
+
+    row.onclick = () => {
+        window.location.href = `/documents/view/${doc.id}`;
+    };
 
     // Document ID (new column)
     const idCell = document.createElement('td');
@@ -119,6 +124,11 @@ function createDocumentRow(doc, keyword = '') {
     // Actions
     const actionsCell = document.createElement('td');
     actionsCell.innerHTML = `
+        <a href="/documents/view/${doc.id}" 
+           class="btn btn-sm btn-outline-info me-1"
+           onclick="event.stopPropagation()">
+            👁️ View
+        </a>
         <a href="/documents/update/${doc.id}" class="btn btn-sm btn-outline-primary me-1">
             ✏️ Edit
         </a>
