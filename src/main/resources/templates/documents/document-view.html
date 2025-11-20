@@ -31,12 +31,11 @@
                     </p>
                 </div>
                 <div>
-                    <!-- Tags (if you add them) -->
-<!--                    <div th:if="${document.tags != null and !document.tags.isEmpty()}">-->
-<!--                        <span th:each="tag : ${document.tags}"-->
-<!--                              class="badge bg-white text-dark me-1"-->
-<!--                              th:text="${tag}">Tag</span>-->
-<!--                    </div>-->
+                    <div th:if="${document.tags != null and !document.tags.isEmpty()}">
+                        <span th:each="tag : ${document.tags}"
+                              class="badge bg-white text-dark me-1"
+                              th:text="${tag}">Tag</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,26 +79,26 @@
                             <span class="metadata-value" th:text="${document.title}">Title</span>
                         </div>
 
-<!--                        <div class="metadata-item" th:if="${document.createdAt != null}">-->
-<!--                            <span class="metadata-label">📅 Created:</span>-->
-<!--                            <span class="metadata-value"-->
-<!--                                  th:text="${#temporals.format(document.createdAt, 'dd MMM yyyy HH:mm')}">-->
-<!--                                01 Jan 2025 12:00-->
-<!--                            </span>-->
-<!--                        </div>-->
+                        <div class="metadata-item" th:if="${document.createdDate != null}">
+                            <span class="metadata-label">📅 Created:</span>
+                            <span class="metadata-value"
+                                  th:text="${#temporals.format(document.createdDate, 'dd MMM yyyy HH:mm')}">
+                                01 Jan 2025 12:00
+                            </span>
+                        </div>
 
-<!--                        <div class="metadata-item" th:if="${document.updatedAt != null}">-->
-<!--                            <span class="metadata-label">🔄 Last Updated:</span>-->
-<!--                            <span class="metadata-value"-->
-<!--                                  th:text="${#temporals.format(document.updatedAt, 'dd MMM yyyy HH:mm')}">-->
-<!--                                15 Jan 2025 14:30-->
-<!--                            </span>-->
-<!--                        </div>-->
+                        <div class="metadata-item" th:if="${document.updatedDate != null}">
+                            <span class="metadata-label">🔄 Last Updated:</span>
+                            <span class="metadata-value"
+                                  th:text="${#temporals.format(document.updatedDate, 'dd MMM yyyy HH:mm')}">
+                                15 Jan 2025 14:30
+                            </span>
+                        </div>
 
-<!--                        <div class="metadata-item" th:if="${document.author != null}">-->
-<!--                            <span class="metadata-label">👤 Author:</span>-->
-<!--                            <span class="metadata-value" th:text="${document.author}">Unknown</span>-->
-<!--                        </div>-->
+                        <div class="metadata-item" th:if="${document.author != null}">
+                            <span class="metadata-label">👤 Author:</span>
+                            <span class="metadata-value" th:text="${document.author}">Unknown</span>
+                        </div>
 
 <!--                        <div class="metadata-item" th:if="${document.category != null}">-->
 <!--                            <span class="metadata-label">🏷️ Category:</span>-->

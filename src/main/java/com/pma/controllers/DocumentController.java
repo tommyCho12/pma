@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/documents")
@@ -45,6 +46,7 @@ public class DocumentController
     @GetMapping("/new")
     public String displayDocumentForm(Model model){
         Document document = new Document();
+        document.setCreatedDate(LocalDateTime.now());
         model.addAttribute("document", document);
         return "documents/new-document";
     }
@@ -53,6 +55,7 @@ public class DocumentController
     public String updateDocument(@PathVariable String id, Model model) {
         Document document = documentService.findById(id)
             .orElseThrow(() -> new RuntimeException("Document not found"));
+        document.setUpdatedDate(LocalDateTime.now());
         model.addAttribute("document", document);
         return "documents/new-document";
     }

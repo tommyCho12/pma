@@ -18,6 +18,9 @@
             <input type="text" placeholder="Content" th:field="*{content}">
         </div>
         <div class="form-group row">
+            <input type="text" placeholder="Author" th:field="*{author}">
+        </div>
+        <div class="form-group row">
             <button class="btn btn-info col-2" type="submit" th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
                 Create Document</button>
         </div>
