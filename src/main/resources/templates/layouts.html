@@ -44,6 +44,9 @@
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/documents}">Documents</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/calculator}">Calculator</a>
+            </li>
         </ul>
         <ul sec:authorize="isAuthenticated()" class="navbar-nav px-3">
             <li class="nav-item" sec:authentication="name"></li>
