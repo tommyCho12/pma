@@ -26,7 +26,11 @@ public class DocumentService {
     public Document save(Document document) {
         // If creating new document (no ID), generate custom ID
         if (document.getId() == null || document.getId().isEmpty())
+        {
             document.setId(idGenerator.generateId());
+            document.setCreatedDate(java.time.LocalDateTime.now());
+        }
+        document.setUpdatedDate(java.time.LocalDateTime.now());
         return repository.save(document);
     }
 
