@@ -1,0 +1,224 @@
+/* Document Review Enhancements */
+
+/* Review Status Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+    border-radius: 0.375rem;
+}
+
+/* Reviewed document row styling */
+.document-row {
+    transition: all 0.2s ease;
+}
+
+.document-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Search highlight */
+.highlight {
+    background-color: #fff3cd;
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* Review Modal Enhancements */
+.modal-content {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-top-left: radius 0.5rem;
+    border-top-right-radius: 0.5rem;
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+}
+
+/* Search Container */
+.search-container {
+    position: relative;
+    margin: 20px 0;
+    max-width: 600px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    z-index: 10;
+}
+
+.search-input {
+    padding-left: 45px;
+    padding-right: 40px;
+    height: 45px;
+    border-radius: 25px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.loading-spinner {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+}
+
+/* Results Count */
+.results-count {
+    margin: 15px 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* No Results Message */
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+/* Document View Enhancements */
+.document-header {
+    padding: 20px 0;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 30px;
+}
+
+.document-content {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    line-height: 1.8;
+}
+
+.metadata-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.metadata-item:last-child {
+    border-bottom: none;
+}
+
+.metadata-label {
+    font-weight: 600;
+    color: #495057;
+    flex: 0 0 45%;
+}
+
+.metadata-value {
+    color: #212529;
+    flex: 1;
+    text-align: right;
+}
+
+/* Action Buttons */
+.action-buttons {
+    margin: 30px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.action-buttons .btn {
+    flex: 0 0 auto;
+}
+
+/* Toast Notification (for success messages) */
+.toast {
+    min-width: 250px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-container {
+        max-width: 100%;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+    }
+    
+    .metadata-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .metadata-value {
+        text-align: left;
+        margin-top: 5px;
+    }
+}
+
+/* Animation for review badge update */
+@keyframes fadeInBadge {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.badge.bg-success {
+    animation: fadeInBadge 0.3s ease;
+}
+
+/* Hover effects for buttons */
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Table enhancements */
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Code styling for document IDs */
+code {
+    font-size: 0.875em;
+    color: #d63384;
+    background-color: #f8f9fa;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+}

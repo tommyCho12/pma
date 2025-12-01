@@ -1,4 +1,5 @@
 package com.pma.services;
+
 import com.pma.dao.IDocumentRepository;
 import com.pma.entities.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,7 @@ public class DocumentService {
 
     public Document save(Document document) {
         // If creating new document (no ID), generate custom ID
-        if (document.getId() == null || document.getId().isEmpty())
-        {
+        if (document.getId() == null || document.getId().isEmpty()) {
             document.setId(idGenerator.generateId());
             document.setCreatedDate(java.time.LocalDateTime.now());
         }
@@ -43,5 +43,33 @@ public class DocumentService {
             return repository.findAll();
         }
         return repository.searchDocuments(keyword);
+    }
+
+    public Document update(String id, Document updatedDocument) {
+        Optional<Document> existingDoc = repository.findById(id);
+        if (existingDoc.isEmpty()) {
+            return null; // Document not found
+        }
+
+        // Preserve the ID and creation date
+        updatedDocument.setId(id);
+        updatedDocument.setCreatedDate(existingDoc.get().getCreatedDate());
+        updatedDocument.setUpdatedDate(java.time.LocalDateTime.now());
+
+        return repository.save(updatedDocument);
+    }
+
+    public Document markAsReviewed(String id, String reviewedBy) {
+        Optional<Document> existingDoc = repository.findById(id);
+        if (existingDoc.isEmpty()) {
+            return null; // Document not found
+        }
+
+        Document document = existingDoc.get();
+        document.setReviewer(reviewedBy);
+        document.setReviewedDate(java.time.LocalDateTime.now());
+        document.setUpdatedDate(java.time.LocalDateTime.now());
+
+        return repository.save(document);
     }
 }
