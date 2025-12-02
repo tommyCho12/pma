@@ -28,9 +28,11 @@ CREATE SEQUENCE IF NOT EXISTS user_accounts_seq;
 
 CREATE TABLE IF NOT EXISTS user_accounts (
     user_id BIGINT NOT NULL DEFAULT nextval('user_accounts_seq') PRIMARY KEY,
-    username VARCHAR(20) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    username VARCHAR(20) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     role VARCHAR(20),
-    enabled BOOLEAN DEFAULT true
+    enabled BOOLEAN DEFAULT true,
+    is_admin BOOLEAN DEFAULT false,
+    is_reviewer BOOLEAN DEFAULT false
 );

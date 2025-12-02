@@ -14,13 +14,14 @@ public class UserAccount {
     @Column(name = "user_id")
     private long userId;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     @NotNull
     @Size(min = 3, max = 20)
     private String userName;
 
     @NotNull
     @Email
+    @Column(unique = true)
     private String email;
 
     @NotNull
@@ -29,6 +30,12 @@ public class UserAccount {
     private String role;
 
     private boolean enabled = true;
+
+    @Column(name = "is_admin")
+    private boolean isAdmin = false;
+
+    @Column(name = "is_reviewer")
+    private boolean isReviewer = false;
 
     public UserAccount() {
     };
@@ -79,5 +86,21 @@ public class UserAccount {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public boolean isReviewer() {
+        return isReviewer;
+    }
+
+    public void setReviewer(boolean reviewer) {
+        isReviewer = reviewer;
     }
 }
