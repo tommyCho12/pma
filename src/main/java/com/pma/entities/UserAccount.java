@@ -4,6 +4,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_accounts")
@@ -27,25 +29,21 @@ public class UserAccount {
     @NotNull
     private String password;
 
-    private String role;
-
     private boolean enabled = true;
 
-    @Column(name = "is_admin")
-    private boolean isAdmin = false;
-
-    @Column(name = "is_reviewer")
-    private boolean isReviewer = false;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    private Set<Permission> permissions = new HashSet<>();
 
     public UserAccount() {
     };
 
-    public String getRole() {
-        return role;
+    public Set<Permission> getPermissions() {
+        return permissions;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPermissions(Set<Permission> permissions) {
+        this.permissions = permissions;
     }
 
     public long getUserId() {
@@ -88,19 +86,31 @@ public class UserAccount {
         this.enabled = enabled;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    // Permission helper methods
+    public boolean hasPermission(String permissionName) {
+        return permissions.stream()
+                .anyMatch(p -> p.getName().equals(permissionName));
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public boolean isAdmin() {
+        return hasPermission("ADMIN");
     }
 
     public boolean isReviewer() {
-        return isReviewer;
+        return hasPermission("REVIEWER");
     }
 
-    public void setReviewer(boolean reviewer) {
-        isReviewer = reviewer;
+    public boolean isViewer() {
+        return permissions.isEmpty();
+    }
+
+    public void addPermission(Permission permission) {
+        this.permissions.add(permission);
+        permission.getUsers().add(this);
+    }
+
+    public void removePermission(Permission permission) {
+        this.permissions.remove(permission);
+        permission.getUsers().remove(this);
     }
 }

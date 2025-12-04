@@ -17,14 +17,14 @@ async function loadDocuments() {
         displayDocuments(allDocuments);
     } catch (error) {
         console.error('Error loading documents:', error);
-        documentsBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Error loading documents</td></tr>';
+        documentsBody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error loading documents</td></tr>';
     } finally {
         showLoading(false);
     }
 }
 
 // Real-time search as user types
-searchInput.addEventListener('input', function() {
+searchInput.addEventListener('input', function () {
     clearTimeout(searchTimeout);
     const keyword = this.value.trim();
 
@@ -54,19 +54,6 @@ function searchDocuments(keyword) {
 
     displayDocuments(filtered, keyword);
 }
-
-// Alternative: Server-side search (uncomment if you prefer server-side)
-/*
-async function searchDocuments(keyword) {
-    try {
-        const response = await fetch(`/api/documents/search?q=${encodeURIComponent(keyword)}`);
-        const results = await response.json();
-        displayDocuments(results, keyword);
-    } catch (error) {
-        console.error('Error searching documents:', error);
-    }
-}
-*/
 
 // Display documents in table
 function displayDocuments(documents, keyword = '') {
@@ -101,18 +88,35 @@ function createDocumentRow(doc, keyword = '') {
     row.className = 'document-row';
     row.style.cursor = 'pointer';
 
+    // Add reviewed row styling if document is reviewed
+    if (doc.reviewedDate) {
+        row.classList.add('reviewed-row');
+    }
+
     row.onclick = () => {
         window.location.href = `/documents/view/${doc.id}`;
     };
 
-    // Document ID (new column)
+    // Document ID with review checkmark if reviewed
     const idCell = document.createElement('td');
-    idCell.innerHTML = `<code>${doc.id}</code>`;
+    const reviewCheckmark = doc.reviewedDate ? '<span class="review-checkmark">✅</span>' : '';
+    idCell.innerHTML = `${reviewCheckmark}<code>${doc.id}</code>`;
     idCell.style.fontSize = '0.9rem';
 
     // Title with highlighting
     const titleCell = document.createElement('td');
     titleCell.innerHTML = highlightText(doc.title || 'Untitled', keyword);
+
+    // // Add review info below title if reviewed
+    // if (doc.reviewedDate && doc.reviewer) {
+    //     const reviewDate = new Date(doc.reviewedDate);
+    //     const formattedDate = reviewDate.toLocaleDateString('en-US', {
+    //         month: 'short',
+    //         day: 'numeric',
+    //         year: 'numeric'
+    //     });
+    //     titleCell.innerHTML += `<div class="review-info">Reviewed by ${escapeHtml(doc.reviewer)} on ${formattedDate}</div>`;
+    // }
 
     // Content preview with highlighting
     const contentCell = document.createElement('td');
@@ -129,10 +133,13 @@ function createDocumentRow(doc, keyword = '') {
            onclick="event.stopPropagation()">
             👁️ View
         </a>
-        <a href="/documents/update/${doc.id}" class="btn btn-sm btn-outline-primary me-1">
+        <a href="/documents/update/${doc.id}" 
+           class="btn btn-sm btn-outline-primary me-1"
+           onclick="event.stopPropagation()">
             ✏️ Edit
         </a>
-        <button onclick="deleteDocument('${doc.id}', '${escapeHtml(doc.title)}')" class="btn btn-sm btn-outline-danger">
+        <button onclick="deleteDocument('${doc.id}', '${escapeHtml(doc.title)}'); event.stopPropagation();" 
+                class="btn btn-sm btn-outline-danger">
             🗑️ Delete
         </button>
         `;

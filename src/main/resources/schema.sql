@@ -31,8 +31,18 @@ CREATE TABLE IF NOT EXISTS user_accounts (
     username VARCHAR(20) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    role VARCHAR(20),
-    enabled BOOLEAN DEFAULT true,
-    is_admin BOOLEAN DEFAULT false,
-    is_reviewer BOOLEAN DEFAULT false
+    enabled BOOLEAN DEFAULT true
+);
+
+CREATE SEQUENCE IF NOT EXISTS permission_seq;
+
+CREATE TABLE IF NOT EXISTS permissions (
+    permission_id BIGINT NOT NULL DEFAULT nextval('permission_seq') PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS user_permissions (
+    user_id BIGINT REFERENCES user_accounts(user_id) ON DELETE CASCADE,
+    permission_id BIGINT REFERENCES permissions(permission_id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, permission_id)
 );

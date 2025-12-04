@@ -1,6 +1,7 @@
 package com.pma.security;
 
 import com.pma.dao.IUserAccountRepository;
+import com.pma.entities.Permission;
 import com.pma.entities.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,21 +27,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserAccount userAccount = userAccountRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        // Build authorities from role and permissions
+        // Build authorities from permissions
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        // Add role if present
-        if (userAccount.getRole() != null && !userAccount.getRole().isEmpty()) {
-            authorities.add(new SimpleGrantedAuthority(userAccount.getRole()));
+        // Convert each permission to a GrantedAuthority
+        for (Permission permission : userAccount.getPermissions()) {
+            authorities.add(new SimpleGrantedAuthority("PERMISSION_" + permission.getName()));
         }
 
-        // Add permission-based authorities
-        if (userAccount.isAdmin()) {
-            authorities.add(new SimpleGrantedAuthority("PERMISSION_ADMIN"));
-        }
-        if (userAccount.isReviewer()) {
-            authorities.add(new SimpleGrantedAuthority("PERMISSION_REVIEWER"));
-        }
+        // If no permissions, user is implicitly a viewer (no special authorities
+        // needed)
 
         // Return Spring Security UserDetails
         return User.builder()

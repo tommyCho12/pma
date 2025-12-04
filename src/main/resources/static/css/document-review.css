@@ -25,6 +25,27 @@
     border-radius: 2px;
 }
 
+/* Reviewed document row styling */
+.reviewed-row {
+    background-color: #e8f5e9 !important;
+}
+
+.reviewed-row:hover {
+    background-color: #d4edda !important;
+}
+
+.review-checkmark {
+    color: #28a745;
+    font-size: 1.1rem;
+    margin-right: 5px;
+}
+
+.review-info {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 2px;
+}
+
 /* Review Modal Enhancements */
 .modal-content {
     border-radius: 0.5rem;
@@ -159,20 +180,20 @@
     .search-container {
         max-width: 100%;
     }
-    
+
     .action-buttons {
         flex-direction: column;
     }
-    
+
     .action-buttons .btn {
         width: 100%;
     }
-    
+
     .metadata-item {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .metadata-value {
         text-align: left;
         margin-top: 5px;
@@ -185,6 +206,7 @@
         opacity: 0;
         transform: scale(0.8);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
