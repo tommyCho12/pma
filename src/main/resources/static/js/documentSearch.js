@@ -107,17 +107,6 @@ function createDocumentRow(doc, keyword = '') {
     const titleCell = document.createElement('td');
     titleCell.innerHTML = highlightText(doc.title || 'Untitled', keyword);
 
-    // // Add review info below title if reviewed
-    // if (doc.reviewedDate && doc.reviewer) {
-    //     const reviewDate = new Date(doc.reviewedDate);
-    //     const formattedDate = reviewDate.toLocaleDateString('en-US', {
-    //         month: 'short',
-    //         day: 'numeric',
-    //         year: 'numeric'
-    //     });
-    //     titleCell.innerHTML += `<div class="review-info">Reviewed by ${escapeHtml(doc.reviewer)} on ${formattedDate}</div>`;
-    // }
-
     // Content preview with highlighting
     const contentCell = document.createElement('td');
     const contentPreview = (doc.content || '').substring(0, 150);
@@ -127,12 +116,18 @@ function createDocumentRow(doc, keyword = '') {
 
     // Actions
     const actionsCell = document.createElement('td');
-    actionsCell.innerHTML = `
+
+    let actionsHTML = `
         <a href="/documents/view/${doc.id}" 
            class="btn btn-sm btn-outline-info me-1"
            onclick="event.stopPropagation()">
             👁️ View
         </a>
+    `;
+
+    // Only add Edit and Delete buttons if user is authenticated
+    if (window.isUserAuthenticated) {
+        actionsHTML += `
         <a href="/documents/update/${doc.id}" 
            class="btn btn-sm btn-outline-primary me-1"
            onclick="event.stopPropagation()">
@@ -143,6 +138,9 @@ function createDocumentRow(doc, keyword = '') {
             🗑️ Delete
         </button>
         `;
+    }
+
+    actionsCell.innerHTML = actionsHTML;
 
     row.appendChild(idCell);
     row.appendChild(titleCell);

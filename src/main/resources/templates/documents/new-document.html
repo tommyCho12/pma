@@ -5,28 +5,26 @@
 <head th:replace="layouts :: header">
 
 <body>
-<nav th:replace="layouts :: navbar"></nav>
-<br>
-<div class="container">
-    <form th:action="@{/documents/save}" th:object="${document}" method="POST">
-        <div class="form-group-row">
-<!--            <input type="hidden" th:field="${document.id}"> &lt;!&ndash;to bind the document that is going to be updated(when clicked on update). &ndash;&gt;-->
-            <input type="hidden" th:field="*{id}" th:if="${document.id != null and document.id != ''}">
-            <input type="text" placeholder="Title" th:field="*{title}">
-        </div>
-        <div class="form-group row">
-            <input type="text" placeholder="Content" th:field="*{content}">
-        </div>
-        <div class="form-group row">
-            <input type="text" placeholder="Author" th:field="*{author}">
-        </div>
-        <div class="form-group row">
-            <button class="btn btn-info col-2" type="submit" th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
-                Create Document</button>
-        </div>
-    </form>
-</div>
-<div th:replace="layouts :: footer"></div>
+    <nav th:replace="layouts :: navbar"></nav>
+    <br>
+    <div class="container">
+        <form th:action="@{/documents/save}" th:object="${document}" method="POST">
+            <div class="form-group-row">
+                <!--            <input type="hidden" th:field="${document.id}"> &lt;!&ndash;to bind the document that is going to be updated(when clicked on update). &ndash;&gt;-->
+                <input type="hidden" th:field="*{id}" th:if="${document.id != null and document.id != ''}">
+                <input type="text" placeholder="Title" th:field="*{title}">
+            </div>
+            <div class="form-group row">
+                <input type="text" placeholder="Content" th:field="*{content}">
+            </div>
+            <div class="form-group row">
+                <button class="btn btn-info col-2" type="submit"
+                    th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
+                    Create Document</button>
+            </div>
+        </form>
+    </div>
+    <div th:replace="layouts :: footer"></div>
 
 </body>
 

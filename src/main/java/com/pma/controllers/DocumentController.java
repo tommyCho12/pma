@@ -28,6 +28,13 @@ public class DocumentController {
         Iterable<Document> documents = documentService.findAll();
         model.addAttribute("documentList", documents);
 
+        // Check if user is authenticated for conditional button rendering in JS
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder
+                .getContext().getAuthentication();
+        boolean isAuthenticated = authentication != null && authentication.isAuthenticated()
+                && !authentication.getPrincipal().equals("anonymousUser");
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
         return "documents/documents-home";
     }
 
@@ -76,6 +83,20 @@ public class DocumentController {
     public String createDocument(Model model, @Valid Document document, Errors errors) {
         if (errors.hasErrors())
             return "documents/new-document";
+
+        // Get the authenticated user and set as author
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder
+                .getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()
+                && !authentication.getPrincipal().equals("anonymousUser")) {
+            String username = authentication.getName();
+
+            // Only set author if it's a new document (id is null or empty)
+            if (document.getId() == null || document.getId().isEmpty()) {
+                document.setAuthor(username);
+            }
+        }
 
         documentService.save(document);
         return "redirect:/documents"; // redirect to prevent multiple saves.
