@@ -20,6 +20,16 @@ public class DocumentApiController {
     // Create a new document
     @PostMapping
     public ResponseEntity<Document> createDocument(@RequestBody Document document) {
+        // Get the authenticated user and set as author
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder
+                .getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()
+                && !authentication.getPrincipal().equals("anonymousUser")) {
+            String username = authentication.getName();
+            document.setAuthor(username);
+        }
+
         Document savedDocument = documentService.save(document);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
     }

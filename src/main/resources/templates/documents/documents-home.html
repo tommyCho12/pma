@@ -52,26 +52,6 @@
                 <p>Try a different search term or create a new document.</p>
             </div>
         </div>
-
-
-        <!--    <table class="table table-bordered table-stripped">-->
-        <!--        <thead class="thead-dark">-->
-        <!--        <th>Title</th>-->
-        <!--        <th>Content</th>-->
-        <!--        <th>Actions</th>-->
-        <!--        </thead>-->
-        <!--        <tbody>-->
-        <!--        <tr th:each="d : ${documentList}">-->
-        <!--            <td th:text="${d.title}" />-->
-        <!--            <td th:text="${d.content}" />-->
-        <!--            <td>-->
-        <!--                <a th:href="@{/documents/update(id=${d.id})}" class="btn btn-info btn-sm">Update</a>-->
-        <!--                <a th:href="@{/documents/delete(id=${d.id})}"-->
-        <!--                   class="btn btn-danger btn-sm" onclick="if(!(confirm('Sure you wanna delete ?'))) return false">Delete</a>-->
-        <!--            </td>-->
-        <!--        </tr>-->
-        <!--        </tbody>-->
-        <!--    </table>-->
     </div>
     <div th:replace="layouts :: footer"></div>
 

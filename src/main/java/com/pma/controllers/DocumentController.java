@@ -4,7 +4,6 @@ import com.pma.dao.IDocumentRepository;
 import com.pma.entities.Document;
 import com.pma.services.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -19,9 +18,6 @@ public class DocumentController {
 
     @Autowired
     IDocumentRepository documentRepository;
-
-    @Autowired
-    private RestTemplateAutoConfiguration restTemplateAutoConfiguration;
 
     @GetMapping
     public String display(Model model) {
