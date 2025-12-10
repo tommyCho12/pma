@@ -28,6 +28,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
                 http
                                 .authorizeRequests()
+
+                                // API endpoints - should come FIRST
+                                .antMatchers("/api/documents/*/review").authenticated() // or
+                                                                                        // .hasAuthority("PERMISSION_REVIEWER")
+                                .antMatchers("/api/documents/**").permitAll() // or .authenticated() if all API calls
+                                                                              // need auth
+
+                                // Web endpoints
                                 .antMatchers("/projects/new").hasRole("ADMIN")
                                 .antMatchers("/projects/save").hasRole("ADMIN")
                                 .antMatchers("/employees/new").hasRole("ADMIN")
@@ -37,7 +45,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                 .antMatchers("/documents/update/*").authenticated()
                                 .antMatchers("/documents/delete/*").authenticated()
                                 .antMatchers("/h2-console/**").permitAll()
+
+                                // Catch-all - must be LAST
                                 .antMatchers("/", "/**").permitAll()
+                                .and().httpBasic() // Enable HTTP Basic authentication for API testing
                                 .and().formLogin()
                                 .and().logout().permitAll()
                                 .and().csrf().disable().headers().frameOptions().disable();

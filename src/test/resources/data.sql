@@ -46,7 +46,7 @@ VALUES (nextval('user_accounts_seq'), 'user', 'user@example.com',
 -- Multi-permission user (username: multi, email: multi@example.com, password: multi)
 INSERT INTO user_accounts (user_id, username, email, password, enabled) 
 VALUES (nextval('user_accounts_seq'), 'multi', 'multi@example.com',
-        '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', true);
+        '$2a$10$Oi0UFaP1bNZFX1QLfQGEmusWs/XxCdBLkZ/OhTgjeALNEs8AmUzhW', true);
 
 -- ASSIGN PERMISSIONS TO USERS
 -- Admin has ADMIN permission

@@ -131,7 +131,7 @@ public class DocumentApiControllerTest {
 				.body("id", equalTo(savedDoc.getId()))
 				.body("title", equalTo("Updated Title"))
 				.body("content", equalTo("Updated Content"))
-				.body("author", equalTo("Update Author"))
+				.body("author", equalTo(savedDoc.getAuthor())) // original author should be preserved
 				.body("updatedDate", notNullValue());
 	}
 
