@@ -16,3 +16,13 @@ test('get started link', async ({ page }) => {
     // Expects page to have a heading with the name of Installation.
     await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
 });
+
+test('custom locator', async ({ page }) => {
+    await page.goto('https://playwright.dev/docs/ci-intro');
+
+    //get element by css locator
+    const getStartedLink = await page.locator("a[class^='navbar'][href*='/docs/api']").click();
+
+    // Expects page to have a heading with the name of Installation.
+    await expect(page.getByRole('heading', { name: 'Playwright Library' })).toBeVisible();
+});
