@@ -6,7 +6,8 @@
 
 .search-container {
     position: relative;
-    margin-bottom: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .search-icon {
@@ -113,6 +114,7 @@
 
 .action-buttons {
     margin-top: 2rem;
+    margin-bottom: 2rem;
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
@@ -122,10 +124,6 @@
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
-}
-
-.back-button {
-    margin-bottom: 1.5rem;
 }
 
 /* Calculator */

@@ -25,13 +25,30 @@
 
             <!-- Document Container (hidden until loaded) -->
             <div id="documentContainer" style="display: none;">
-                <!-- Back Button -->
-                <div class="back-button">
+                <!-- Action Buttons -->
+                <div class="action-buttons">
                     <a href="/documents" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Back to Documents
                     </a>
-                </div>
 
+                    <a sec:authorize="isAuthenticated()" id="updateButton" href="#" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i> Edit Document
+                    </a>
+
+                    <!-- Review Button - Only visible to reviewers -->
+                    <button sec:authorize="hasAuthority('PERMISSION_REVIEWER')" id="reviewButton"
+                        class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Mark as Reviewed
+                    </button>
+
+                    <button onclick="window.print()" class="btn btn-secondary">
+                        <i class="bi bi-printer"></i> Print
+                    </button>
+
+                    <a sec:authorize="isAuthenticated()" id="deleteButton" href="#" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
                 <!-- Document Header -->
                 <div class="document-header">
                     <div class="d-flex justify-content-between align-items-start">
@@ -95,28 +112,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <a sec:authorize="isAuthenticated()" id="updateButton" href="#" class="btn btn-primary">
-                        <i class="bi bi-pencil"></i> Edit Document
-                    </a>
-
-                    <!-- Review Button - Only visible to reviewers -->
-                    <button sec:authorize="hasAuthority('PERMISSION_REVIEWER')" id="reviewButton"
-                        class="btn btn-success">
-                        <i class="bi bi-check-circle"></i> Mark as Reviewed
-                    </button>
-
-                    <button onclick="window.print()" class="btn btn-secondary">
-                        <i class="bi bi-printer"></i> Print
-                    </button>
-
-                    <a sec:authorize="isAuthenticated()" id="deleteButton" href="#" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> Delete
-                    </a>
-                </div>
-
             </div>
 
         </div>
