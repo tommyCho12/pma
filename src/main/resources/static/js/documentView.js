@@ -34,11 +34,13 @@ function displayDocument(doc) {
         titleElement.textContent = doc.title;
     }
 
-    // Update content
+    // Update content - Render markdown as HTML
     const contentElement = document.getElementById('documentContent');
-    if (contentElement) {
-        contentElement.textContent = doc.content;
+    if (contentElement && doc.content) {
+        // Parse markdown and render as HTML
+        contentElement.innerHTML = marked.parse(doc.content);
     }
+
 
     // Update author
     const authorElement = document.getElementById('documentAuthor');

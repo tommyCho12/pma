@@ -4,6 +4,7 @@
     layout:decorate="~{layouts/main}" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head th:replace="layouts :: header">
+</head>
 
 <body>
     <nav th:replace="layouts :: navbar"></nav>
@@ -122,6 +123,81 @@
 
         <div th:replace="layouts :: footer"></div>
     </div>
+
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Markdown content styling */
+        #documentContent {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        #documentContent h1 {
+            font-size: 2em;
+            margin-top: 0.67em;
+            margin-bottom: 0.67em;
+        }
+
+        #documentContent h2 {
+            font-size: 1.5em;
+            margin-top: 0.83em;
+            margin-bottom: 0.83em;
+        }
+
+        #documentContent h3 {
+            font-size: 1.17em;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+
+        #documentContent p {
+            margin: 1em 0;
+        }
+
+        #documentContent ul,
+        #documentContent ol {
+            margin: 1em 0;
+            padding-left: 2em;
+        }
+
+        #documentContent code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        #documentContent pre {
+            background-color: #f4f4f4;
+            padding: 12px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+
+        #documentContent pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        #documentContent blockquote {
+            border-left: 4px solid #ddd;
+            padding-left: 15px;
+            color: #666;
+            margin: 1em 0;
+        }
+
+        #documentContent a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #documentContent a:hover {
+            text-decoration: underline;
+        }
+    </style>
 
     <!-- Include document view handler -->
     <script th:src="@{/js/documentView.js}"></script>

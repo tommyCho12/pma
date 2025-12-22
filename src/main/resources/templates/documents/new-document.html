@@ -3,28 +3,254 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="layouts :: header">
+</head>
 
 <body>
     <nav th:replace="layouts :: navbar"></nav>
-    <br>
-    <div class="container">
-        <form id="documentForm" th:object="${document}">
-            <div class="form-group-row">
-                <!--            <input type="hidden" th:field="${document.id}"> &lt;!&ndash;to bind the document that is going to be updated(when clicked on update). &ndash;&gt;-->
+
+    <!-- EasyMDE CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+
+    <style>
+        .document-form-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #007bff;
+        }
+
+        .page-header h2 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: #666;
+            margin: 0;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control-custom:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .editor-wrapper {
+            margin-bottom: 25px;
+        }
+
+        .editor-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .editor-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .CodeMirror {
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-size: 14px;
+            min-height: 300px;
+        }
+
+        .CodeMirror:focus-within {
+            border-color: #007bff;
+        }
+
+        .editor-toolbar {
+            border: 2px solid #e1e8ed;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            background: #f8f9fa;
+        }
+
+        .editor-toolbar.fullscreen {
+            background: #f8f9fa;
+        }
+
+        .btn-submit {
+            background: #007bff;
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #545b62;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+
+    <div class="document-form-container">
+        <div class="page-header">
+            <h2 th:text="${document.id != null and document.id != ''} ? 'Edit Document' : 'Create New Document'">Create
+                New Document</h2>
+            <p>Use markdown formatting to create rich content</p>
+        </div>
+
+        <div class="form-card">
+            <form id="documentForm" th:object="${document}">
                 <input type="hidden" th:field="*{id}" th:if="${document.id != null and document.id != ''}" name="id">
-                <input type="text" placeholder="Title" th:field="*{title}" name="title" required>
-            </div>
-            <div class="form-group row">
-                <input type="text" placeholder="Content" th:field="*{content}" name="content" required>
-            </div>
-            <div class="form-group row">
-                <button class="btn btn-info col-2" type="submit"
-                    th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
-                    Create Document</button>
-            </div>
-        </form>
+
+                <div class="form-group">
+                    <label class="form-label" for="documentTitle">Document Title *</label>
+                    <input type="text" id="documentTitle" class="form-control-custom" placeholder="Enter document title"
+                        th:field="*{title}" name="title" required>
+                </div>
+
+                <div class="editor-wrapper">
+                    <label class="editor-label" for="contentEditor">Content *</label>
+                    <textarea id="contentEditor" th:field="*{content}" name="content"></textarea>
+                    <p class="editor-hint">💡 Tip: Use the toolbar buttons or markdown syntax. Press preview to see how
+                        it looks.</p>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-submit" type="submit"
+                        th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
+                        Create Document
+                    </button>
+                    <a href="/documents" class="btn-cancel">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
+
     <div th:replace="layouts :: footer"></div>
+
+    <!-- EasyMDE JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+
+    <!-- Initialize Markdown Editor -->
+    <script>
+        // Initialize EasyMDE after DOM is loaded
+        let easyMDE;
+        document.addEventListener('DOMContentLoaded', function () {
+            easyMDE = new EasyMDE({
+                element: document.getElementById('contentEditor'),
+                spellChecker: false,
+                placeholder: "Write your document content here using Markdown...\n\nExamples:\n# Heading 1\n## Heading 2\n\n**Bold text**\n*Italic text*\n\n- List item 1\n- List item 2",
+                status: ["lines", "words", "cursor"],
+                toolbar: [
+                    "bold",
+                    "italic",
+                    "heading",
+                    "|",
+                    "quote",
+                    "unordered-list",
+                    "ordered-list",
+                    "|",
+                    "link",
+                    "image",
+                    "|",
+                    "preview",
+                    "side-by-side",
+                    "fullscreen",
+                    "|",
+                    "guide"
+                ],
+                renderingConfig: {
+                    singleLineBreaks: false,
+                    codeSyntaxHighlighting: true,
+                },
+                minHeight: "300px",
+                maxHeight: "600px",
+            });
+
+            // Add form validation
+            const form = document.getElementById('documentForm');
+            form.addEventListener('submit', function (e) {
+                const content = easyMDE.value().trim();
+
+                if (!content) {
+                    e.preventDefault();
+                    alert('Please enter document content');
+                    return false;
+                }
+
+                // Ensure the content is synced to the textarea
+                document.getElementById('contentEditor').value = content;
+                return true;
+            });
+        });
+    </script>
 
     <!-- Include document form handler -->
     <script th:src="@{/js/documentForm.js}"></script>
