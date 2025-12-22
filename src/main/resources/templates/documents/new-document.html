@@ -55,62 +55,9 @@
     <!-- EasyMDE JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 
-    <!-- Initialize Markdown Editor -->
-    <script>
-        // Initialize EasyMDE after DOM is loaded
-        let easyMDE;
-        document.addEventListener('DOMContentLoaded', function () {
-            easyMDE = new EasyMDE({
-                element: document.getElementById('contentEditor'),
-                spellChecker: false,
-                placeholder: "Write your document content here using Markdown...\n\nExamples:\n# Heading 1\n## Heading 2\n\n**Bold text**\n*Italic text*\n\n- List item 1\n- List item 2",
-                status: ["lines", "words", "cursor"],
-                toolbar: [
-                    "bold",
-                    "italic",
-                    "heading",
-                    "|",
-                    "quote",
-                    "unordered-list",
-                    "ordered-list",
-                    "|",
-                    "link",
-                    "image",
-                    "|",
-                    "preview",
-                    "side-by-side",
-                    "fullscreen",
-                    "|",
-                    "guide"
-                ],
-                renderingConfig: {
-                    singleLineBreaks: false,
-                    codeSyntaxHighlighting: true,
-                },
-                minHeight: "300px",
-                maxHeight: "600px",
-            });
-
-            // Add form validation
-            const form = document.getElementById('documentForm');
-            form.addEventListener('submit', function (e) {
-                const content = easyMDE.value().trim();
-
-                if (!content) {
-                    e.preventDefault();
-                    alert('Please enter document content');
-                    return false;
-                }
-
-                // Ensure the content is synced to the textarea
-                document.getElementById('contentEditor').value = content;
-                return true;
-            });
-        });
-    </script>
-
-    <!-- Include document form handler -->
+    <!-- Document Form Handler (includes editor initialization and form submission) -->
     <script th:src="@{/js/documentForm.js}"></script>
+
 
 </body>
 
