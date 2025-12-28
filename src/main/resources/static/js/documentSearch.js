@@ -114,6 +114,17 @@ function createDocumentRow(doc, keyword = '') {
     contentCell.innerHTML = highlightText(contentPreview + truncated, keyword);
     contentCell.style.color = '#6c757d';
 
+    // Tags
+    const tagsCell = document.createElement('td');
+    // Create badge for each tag
+    if (doc.tags) {
+        doc.tags.forEach(tag => {
+            const tagBadge = document.createElement('span');
+            tagBadge.className = 'tag-badge-view';
+            tagBadge.textContent = tag;
+            tagsCell.appendChild(tagBadge);
+        });
+    }
     // Actions
     const actionsCell = document.createElement('td');
 
@@ -145,6 +156,7 @@ function createDocumentRow(doc, keyword = '') {
     row.appendChild(idCell);
     row.appendChild(titleCell);
     row.appendChild(contentCell);
+    row.appendChild(tagsCell);
     row.appendChild(actionsCell);
 
     return row;
