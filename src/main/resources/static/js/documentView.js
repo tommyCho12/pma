@@ -76,6 +76,9 @@ function displayDocument(doc) {
         }
     }
 
+    // Display tags if available
+    displayTags(doc.tags);
+
     // Update action buttons with document ID
     const updateButton = document.getElementById('updateButton');
     if (updateButton) {
@@ -102,6 +105,37 @@ function displayDocument(doc) {
     const contentContainer = document.getElementById('documentContainer');
     if (contentContainer) {
         contentContainer.style.display = 'block';
+    }
+}
+
+/**
+ * Display document tags in the metadata section
+ * @param {Array} tags - Array of tag strings
+ */
+function displayTags(tags) {
+    const tagsSection = document.getElementById('documentTagsSection');
+    const tagsDisplay = document.getElementById('documentTagsDisplay');
+
+    if (!tagsSection || !tagsDisplay) {
+        return;
+    }
+
+    // Clear existing tags
+    tagsDisplay.innerHTML = '';
+
+    // Show section only if there are tags
+    if (tags && Array.isArray(tags) && tags.length > 0) {
+        tagsSection.style.display = 'block';
+
+        // Create badge for each tag
+        tags.forEach(tag => {
+            const tagBadge = document.createElement('span');
+            tagBadge.className = 'tag-badge-view';
+            tagBadge.textContent = tag;
+            tagsDisplay.appendChild(tagBadge);
+        });
+    } else {
+        tagsSection.style.display = 'none';
     }
 }
 

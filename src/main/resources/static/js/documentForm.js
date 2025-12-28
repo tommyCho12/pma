@@ -2,6 +2,7 @@
 // Handles markdown editor initialization, form validation, and REST API operations
 
 let easyMDE;
+let documentTags = []; // Array to store document tags
 
 /**
  * Initialize the EasyMDE markdown editor
@@ -93,7 +94,8 @@ function setupFormSubmission() {
 
         const documentData = {
             title: formData.get('title'),
-            content: formData.get('content')
+            content: formData.get('content'),
+            tags: documentTags // Include tags in submission
         };
 
         // Add ID for updates
@@ -148,6 +150,149 @@ function setupFormSubmission() {
 }
 
 /**
+ * Initialize tags from existing document data
+ * Called when editing an existing document
+ */
+function initializeTags() {
+    // Check if tags were provided by Thymeleaf inline script
+    if (window.initialDocumentTags && Array.isArray(window.initialDocumentTags) && window.initialDocumentTags.length > 0) {
+        documentTags = window.initialDocumentTags;
+        renderTags();
+    } else {
+        documentTags = [];
+    }
+}
+
+/**
+ * Add a new tag to the document
+ * @param {string} tagText - The tag text to add
+ */
+function addTag(tagText) {
+    // Trim and normalize the tag
+    const tag = tagText.trim().toLowerCase();
+
+    // Validate tag
+    if (!tag) {
+        return;
+    }
+
+    // Check for duplicates
+    if (documentTags.includes(tag)) {
+        showTagMessage('This tag already exists', 'warning');
+        return;
+    }
+
+    // Add tag to array
+    documentTags.push(tag);
+
+    // Update UI
+    renderTags();
+
+    // Clear input
+    document.getElementById('tagInput').value = '';
+}
+
+/**
+ * Remove a tag from the document
+ * @param {number} index - Index of the tag to remove
+ */
+function removeTag(index) {
+    documentTags.splice(index, 1);
+    renderTags();
+}
+
+/**
+ * Render all tags in the UI
+ */
+function renderTags() {
+    const container = document.getElementById('tagsContainer');
+
+    // Clear container
+    container.innerHTML = '';
+
+    // Render each tag
+    documentTags.forEach((tag, index) => {
+        const tagBadge = document.createElement('div');
+        tagBadge.className = 'tag-badge';
+
+        const tagText = document.createElement('span');
+        tagText.className = 'tag-text';
+        tagText.textContent = tag;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'tag-remove';
+        removeBtn.innerHTML = '×';
+        removeBtn.type = 'button';
+        removeBtn.setAttribute('aria-label', `Remove ${tag} tag`);
+        removeBtn.addEventListener('click', () => removeTag(index));
+
+        tagBadge.appendChild(tagText);
+        tagBadge.appendChild(removeBtn);
+        container.appendChild(tagBadge);
+    });
+
+    // Update hidden input for Thymeleaf form binding
+    document.getElementById('tagsData').value = JSON.stringify(documentTags);
+}
+
+/**
+ * Setup tag input event listeners
+ */
+function setupTagInput() {
+    const tagInput = document.getElementById('tagInput');
+    const addTagBtn = document.getElementById('addTagBtn');
+
+    if (!tagInput || !addTagBtn) {
+        return;
+    }
+
+    // Add tag on button click
+    addTagBtn.addEventListener('click', () => {
+        addTag(tagInput.value);
+    });
+
+    // Add tag on Enter key
+    tagInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addTag(tagInput.value);
+        }
+    });
+}
+
+/**
+ * Show temporary message for tag operations
+ * @param {string} message - Message to display
+ * @param {string} type - Message type (warning, info)
+ */
+function showTagMessage(message, type) {
+    const tagInput = document.getElementById('tagInput');
+
+    // Create message element
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `tag-message tag-message-${type}`;
+    messageDiv.textContent = message;
+    messageDiv.style.cssText = `
+        font-size: 12px;
+        color: ${type === 'warning' ? '#856404' : '#004085'};
+        background: ${type === 'warning' ? '#fff3cd' : '#cce5ff'};
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin-top: 5px;
+        animation: tagFadeIn 0.3s ease;
+    `;
+
+    // Insert after tag input wrapper
+    const wrapper = tagInput.parentElement;
+    wrapper.parentElement.insertBefore(messageDiv, wrapper.nextSibling);
+
+    // Auto-remove after 2 seconds
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 2000);
+}
+
+/**
  * Display success or error messages to the user
  * @param {string} type - 'success' or 'error'
  * @param {string} message - Message to display
@@ -181,4 +326,6 @@ function showMessage(type, message) {
 document.addEventListener('DOMContentLoaded', function () {
     initializeEditor();
     setupFormSubmission();
+    initializeTags();      // Load existing tags if editing
+    setupTagInput();       // Setup tag input handlers
 });

@@ -39,6 +39,34 @@
                         it looks.</p>
                 </div>
 
+                <!-- Tags Section -->
+                <div class="tags-section">
+                    <label class="form-label" for="tagInput">Tags</label>
+                    <p class="form-hint">Add tags to organize and categorize your document. Press Enter or click Add to
+                        add a tag.</p>
+
+                    <div class="tag-input-wrapper">
+                        <input type="text" id="tagInput" class="form-control-custom tag-input"
+                            placeholder="Enter a tag (e.g., important, draft, review)">
+                        <button type="button" id="addTagBtn" class="btn-add-tag">Add Tag</button>
+                    </div>
+
+                    <div id="tagsContainer" class="tags-container">
+                        <!-- Tags will be added here dynamically -->
+                    </div>
+
+                    <!-- Hidden input to store tags as JSON for form submission -->
+                    <input type="hidden" id="tagsData" name="tags">
+
+                    <!-- Thymeleaf inline script to initialize tags from server -->
+                    <script th:inline="javascript">
+                        /*<![CDATA[*/
+                        // Initialize tags from server-side data
+                        window.initialDocumentTags = /*[[${document.tags}]]*/[];
+                        /*]]>*/
+                    </script>
+                </div>
+
                 <div class="button-group">
                     <button class="btn-submit" type="submit"
                         th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
