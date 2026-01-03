@@ -16,6 +16,30 @@
         <!--    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/documents/new}" class="btn btn-primary">New Project</a>-->
         <a sec:authorize="isAuthenticated()" th:href="@{/documents/new}" class="btn btn-primary">Add Document</a>
 
+        <!-- Filter Controls -->
+        <div class="filters-container">
+            <div class="filter-group">
+                <!-- <label for="tagFilter" class="filter-label">Tags:</label> -->
+                <div class="tag-filter-wrapper">
+                    <input type="text" id="tagSearchInput" class="tag-search-input" placeholder="Type to search tags..."
+                        autocomplete="off">
+                    <div id="tagOptionsDropdown" class="tag-options-dropdown" style="display: none;">
+                        <!-- Tag options will be populated dynamically -->
+                    </div>
+                    <div id="selectedTagsDisplay" class="selected-tags-display">
+                        <!-- Selected tags will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="reviewed-checkbox-wrapper">
+                    <input type="checkbox" id="reviewedCheckbox" class="reviewed-checkbox">
+                    <span>Only Reviewed</span>
+                </label>
+            </div>
+        </div>
+
         <!-- Search Bar -->
         <div class="search-container">
             <span class="search-icon">🔍</span>
