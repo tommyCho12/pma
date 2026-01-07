@@ -32,7 +32,7 @@ test('basic workflow: reviewer reviews document', async ({ page }) => {
     const documentContent = 'This is a test document for the basic workflow test.';
 
     await loginAsUser(page);
-    await createDocument(page, documentTitle, documentContent);
+    await createDocument(page, documentTitle, documentContent); await page.getByRole('link', { name: 'Documents' }).click();
     await logout(page);
     await loginAsReviewer(page);
     await expect(page.getByText('reviewer@example.com')).toBeVisible();

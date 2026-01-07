@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+import { EnvironmentConfig, getEnvironment } from './environment';
+
+const environment = getEnvironment();
+const { baseURL } = EnvironmentConfig[environment];
 
 export default defineConfig({
     testDir: './tests',
@@ -8,7 +12,10 @@ export default defineConfig({
     workers: process.env.CI ? 1 : undefined,
     reporter: 'html',
     use: {
+        baseURL,
         trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
     },
     projects: [
         {
