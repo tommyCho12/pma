@@ -1,7 +1,7 @@
 import { Page } from 'playwright';
 
 export async function login(page: Page, username: string = 'reviewer@example.com', password: string = 'reviewer') {
-    await page.goto('http://localhost:8080');
+    await page.goto('/');
     await page.getByText('Log in').click();
     await page.getByPlaceholder('Username').fill(username);
     await page.getByPlaceholder('Password').fill(password);
@@ -27,13 +27,13 @@ export async function logout(page: Page) {
 }
 
 export async function navigateToDocuments(page: Page) {
-    await page.goto('http://localhost:8080/documents');
+    await page.goto('/documents');
     await page.waitForLoadState('networkidle');
 }
 
 export async function createDocument(page: Page, title: string, content: string, tags?: string[]) {
     // API request to create document
-    const response = await page.request.post('http://localhost:8080/api/documents', {
+    const response = await page.request.post('/api/documents', {
         headers: {
             'Content-Type': 'application/json'
         },
