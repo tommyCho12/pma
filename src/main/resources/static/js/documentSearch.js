@@ -5,8 +5,16 @@ const noResults = document.getElementById('noResults');
 const loadingSpinner = document.querySelector('.loading-spinner');
 const documentsTable = document.getElementById('documentsTable');
 
+// Filter elements
+const tagSearchInput = document.getElementById('tagSearchInput');
+const tagOptionsDropdown = document.getElementById('tagOptionsDropdown');
+const selectedTagsDisplay = document.getElementById('selectedTagsDisplay');
+const reviewedCheckbox = document.getElementById('reviewedCheckbox');
+
 let searchTimeout;
 let allDocuments = [];
+let allTags = [];
+let selectedTags = [];
 
 // Load all documents on page load
 async function loadDocuments() {
@@ -14,59 +22,163 @@ async function loadDocuments() {
         showLoading(true);
         const response = await fetch('/api/documents/all');
         allDocuments = await response.json();
+        extractAllTags();
         displayDocuments(allDocuments);
     } catch (error) {
         console.error('Error loading documents:', error);
-        documentsBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Error loading documents</td></tr>';
+        documentsBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading documents</td></tr>';
     } finally {
         showLoading(false);
     }
 }
 
-// Real-time search as user types
-searchInput.addEventListener('input', function() {
-    clearTimeout(searchTimeout);
-    const keyword = this.value.trim();
+// Extract all unique tags from documents
+function extractAllTags() {
+    const tagSet = new Set();
+    allDocuments.forEach(doc => {
+        if (doc.tags && Array.isArray(doc.tags)) {
+            doc.tags.forEach(tag => tagSet.add(tag));
+        }
+    });
+    allTags = Array.from(tagSet).sort();
+}
 
+// Real-time search as user types
+searchInput.addEventListener('input', function () {
+    clearTimeout(searchTimeout);
     showLoading(true);
 
     // Debounce: wait 300ms after user stops typing
     searchTimeout = setTimeout(() => {
-        if (keyword === '') {
-            displayDocuments(allDocuments);
-        } else {
-            searchDocuments(keyword);
-        }
+        applyFilters();
         showLoading(false);
     }, 300);
 });
 
-// Search documents (client-side filtering for instant results)
-function searchDocuments(keyword) {
-    const lowerKeyword = keyword.toLowerCase();
+// Tag search input - filter dropdown options
+tagSearchInput.addEventListener('input', function () {
+    const searchTerm = this.value.toLowerCase().trim();
+    displayTagOptions(searchTerm);
+});
+
+// Show dropdown when tag search is focused
+tagSearchInput.addEventListener('focus', function () {
+    displayTagOptions(this.value.toLowerCase().trim());
+});
+
+// Hide dropdown when clicking outside
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.tag-filter-wrapper')) {
+        tagOptionsDropdown.style.display = 'none';
+    }
+});
+
+// Reviewed checkbox change
+reviewedCheckbox.addEventListener('change', function () {
+    applyFilters();
+});
+
+// Display tag options in dropdown
+function displayTagOptions(searchTerm) {
+    tagOptionsDropdown.innerHTML = '';
+
+    const filteredTags = allTags.filter(tag =>
+        tag.toLowerCase().includes(searchTerm)
+    );
+
+    if (filteredTags.length === 0) {
+        tagOptionsDropdown.innerHTML = '<div class="tag-option-empty">No tags found</div>';
+        tagOptionsDropdown.style.display = 'block';
+        return;
+    }
+
+    filteredTags.forEach(tag => {
+        const option = document.createElement('div');
+        option.className = 'tag-option';
+        if (selectedTags.includes(tag)) {
+            option.classList.add('selected');
+        }
+        option.textContent = tag;
+        option.addEventListener('click', () => toggleTagSelection(tag));
+        tagOptionsDropdown.appendChild(option);
+    });
+
+    tagOptionsDropdown.style.display = 'block';
+}
+
+// Toggle tag selection
+function toggleTagSelection(tag) {
+    const index = selectedTags.indexOf(tag);
+    if (index > -1) {
+        selectedTags.splice(index, 1);
+    } else {
+        selectedTags.push(tag);
+    }
+    updateSelectedTagsDisplay();
+    displayTagOptions(tagSearchInput.value.toLowerCase().trim());
+    applyFilters();
+}
+
+// Update selected tags display
+function updateSelectedTagsDisplay() {
+    selectedTagsDisplay.innerHTML = '';
+
+    if (selectedTags.length === 0) {
+        selectedTagsDisplay.style.display = 'none';
+        return;
+    }
+
+    selectedTagsDisplay.style.display = 'flex';
+
+    selectedTags.forEach(tag => {
+        const badge = document.createElement('span');
+        badge.className = 'selected-tag-badge';
+        badge.innerHTML = `
+            <span>${tag}</span>
+            <span class="selected-tag-remove" data-tag="${tag}">×</span>
+        `;
+
+        badge.querySelector('.selected-tag-remove').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleTagSelection(tag);
+        });
+
+        selectedTagsDisplay.appendChild(badge);
+    });
+}
+
+// Apply all filters (search + tags + reviewed)
+function applyFilters() {
+    const keyword = searchInput.value.trim().toLowerCase();
+    const onlyReviewed = reviewedCheckbox.checked;
 
     const filtered = allDocuments.filter(doc => {
-        const title = (doc.title || '').toLowerCase();
-        const content = (doc.content || '').toLowerCase();
-        const id = (doc.id || '').toLowerCase();
-        return title.includes(lowerKeyword) || content.includes(lowerKeyword) || id.includes(lowerKeyword);
+        // Search filter
+        if (keyword) {
+            const title = (doc.title || '').toLowerCase();
+            const content = (doc.content || '').toLowerCase();
+            const id = (doc.id || '').toLowerCase();
+            const matchesSearch = title.includes(keyword) || content.includes(keyword) || id.includes(keyword);
+            if (!matchesSearch) return false;
+        }
+
+        // Tag filter
+        if (selectedTags.length > 0) {
+            const docTags = doc.tags || [];
+            const hasSelectedTag = selectedTags.some(tag => docTags.includes(tag));
+            if (!hasSelectedTag) return false;
+        }
+
+        // Reviewed filter
+        if (onlyReviewed && !doc.reviewedDate) {
+            return false;
+        }
+
+        return true;
     });
 
     displayDocuments(filtered, keyword);
 }
-
-// Alternative: Server-side search (uncomment if you prefer server-side)
-/*
-async function searchDocuments(keyword) {
-    try {
-        const response = await fetch(`/api/documents/search?q=${encodeURIComponent(keyword)}`);
-        const results = await response.json();
-        displayDocuments(results, keyword);
-    } catch (error) {
-        console.error('Error searching documents:', error);
-    }
-}
-*/
 
 // Display documents in table
 function displayDocuments(documents, keyword = '') {
@@ -82,9 +194,14 @@ function displayDocuments(documents, keyword = '') {
     documentsTable.style.display = 'table';
     noResults.style.display = 'none';
 
-    // Update results count
-    if (keyword) {
-        resultsCount.textContent = `Found ${documents.length} document${documents.length !== 1 ? 's' : ''} matching "${keyword}"`;
+    // Update results count with filter information
+    const filterDescriptions = [];
+    if (keyword) filterDescriptions.push(`search: "${keyword}"`);
+    if (selectedTags.length > 0) filterDescriptions.push(`tags: ${selectedTags.join(', ')}`);
+    if (reviewedCheckbox.checked) filterDescriptions.push('reviewed only');
+
+    if (filterDescriptions.length > 0) {
+        resultsCount.textContent = `Found ${documents.length} document${documents.length !== 1 ? 's' : ''} (${filterDescriptions.join('; ')})`;
     } else {
         resultsCount.textContent = `Showing all ${documents.length} document${documents.length !== 1 ? 's' : ''}`;
     }
@@ -101,13 +218,19 @@ function createDocumentRow(doc, keyword = '') {
     row.className = 'document-row';
     row.style.cursor = 'pointer';
 
+    // Add reviewed row styling if document is reviewed
+    if (doc.reviewedDate) {
+        row.classList.add('reviewed-row');
+    }
+
     row.onclick = () => {
         window.location.href = `/documents/view/${doc.id}`;
     };
 
-    // Document ID (new column)
+    // Document ID with review checkmark if reviewed
     const idCell = document.createElement('td');
-    idCell.innerHTML = `<code>${doc.id}</code>`;
+    const reviewCheckmark = doc.reviewedDate ? '<span class="review-checkmark">✅</span>' : '';
+    idCell.innerHTML = `${reviewCheckmark}<code>${doc.id}</code>`;
     idCell.style.fontSize = '0.9rem';
 
     // Title with highlighting
@@ -121,25 +244,49 @@ function createDocumentRow(doc, keyword = '') {
     contentCell.innerHTML = highlightText(contentPreview + truncated, keyword);
     contentCell.style.color = '#6c757d';
 
+    // Tags
+    const tagsCell = document.createElement('td');
+    // Create badge for each tag
+    if (doc.tags) {
+        doc.tags.forEach(tag => {
+            const tagBadge = document.createElement('span');
+            tagBadge.className = 'tag-badge-view';
+            tagBadge.textContent = tag;
+            tagsCell.appendChild(tagBadge);
+        });
+    }
     // Actions
     const actionsCell = document.createElement('td');
-    actionsCell.innerHTML = `
+
+    let actionsHTML = `
         <a href="/documents/view/${doc.id}" 
            class="btn btn-sm btn-outline-info me-1"
            onclick="event.stopPropagation()">
             👁️ View
         </a>
-        <a href="/documents/update/${doc.id}" class="btn btn-sm btn-outline-primary me-1">
+    `;
+
+    // Only add Edit and Delete buttons if user is authenticated
+    if (window.isUserAuthenticated) {
+        actionsHTML += `
+        <a href="/documents/update/${doc.id}" 
+           class="btn btn-sm btn-outline-primary me-1"
+           onclick="event.stopPropagation()">
             ✏️ Edit
         </a>
-        <button onclick="deleteDocument('${doc.id}', '${escapeHtml(doc.title)}')" class="btn btn-sm btn-outline-danger">
+        <button onclick="deleteDocument('${doc.id}', '${escapeHtml(doc.title)}'); event.stopPropagation();" 
+                class="btn btn-sm btn-outline-danger">
             🗑️ Delete
         </button>
         `;
+    }
+
+    actionsCell.innerHTML = actionsHTML;
 
     row.appendChild(idCell);
     row.appendChild(titleCell);
     row.appendChild(contentCell);
+    row.appendChild(tagsCell);
     row.appendChild(actionsCell);
 
     return row;
@@ -185,13 +332,9 @@ async function deleteDocument(id, title) {
         if (response.ok) {
             // Remove from local array
             allDocuments = allDocuments.filter(doc => doc.id !== id);
-            // Re-apply current search
-            const keyword = searchInput.value.trim();
-            if (keyword) {
-                searchDocuments(keyword);
-            } else {
-                displayDocuments(allDocuments);
-            }
+            // Re-extract tags and re-apply filters
+            extractAllTags();
+            applyFilters();
         } else {
             alert('Error deleting document');
         }

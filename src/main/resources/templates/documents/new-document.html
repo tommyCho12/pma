@@ -3,30 +3,89 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="layouts :: header">
+</head>
 
 <body>
-<nav th:replace="layouts :: navbar"></nav>
-<br>
-<div class="container">
-    <form th:action="@{/documents/save}" th:object="${document}" method="POST">
-        <div class="form-group-row">
-<!--            <input type="hidden" th:field="${document.id}"> &lt;!&ndash;to bind the document that is going to be updated(when clicked on update). &ndash;&gt;-->
-            <input type="hidden" th:field="*{id}" th:if="${document.id != null and document.id != ''}">
-            <input type="text" placeholder="Title" th:field="*{title}">
+    <nav th:replace="layouts :: navbar"></nav>
+
+    <!-- EasyMDE CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+
+    <!-- Document Form Styles -->
+    <link rel="stylesheet" th:href="@{/css/document-new.css}">
+
+
+    <div class="document-form-container">
+        <div class="page-header">
+            <h2 th:text="${document.id != null and document.id != ''} ? 'Edit Document' : 'Create New Document'">Create
+                New Document</h2>
+            <p>Use markdown formatting to create rich content</p>
         </div>
-        <div class="form-group row">
-            <input type="text" placeholder="Content" th:field="*{content}">
+
+        <div class="form-card">
+            <form id="documentForm" th:object="${document}">
+                <input type="hidden" th:field="*{id}" th:if="${document.id != null and document.id != ''}" name="id">
+
+                <div class="form-group">
+                    <label class="form-label" for="documentTitle">Document Title *</label>
+                    <input type="text" id="documentTitle" class="form-control-custom" placeholder="Enter document title"
+                        th:field="*{title}" name="title" required>
+                </div>
+
+                <div class="editor-wrapper">
+                    <label class="editor-label" for="contentEditor">Content *</label>
+                    <textarea id="contentEditor" th:field="*{content}" name="content"></textarea>
+                    <p class="editor-hint">💡 Tip: Use the toolbar buttons or markdown syntax. Press preview to see how
+                        it looks.</p>
+                </div>
+
+                <!-- Tags Section -->
+                <div class="tags-section">
+                    <label class="form-label" for="tagInput">Tags</label>
+                    <p class="form-hint">Add tags to organize and categorize your document. Press Enter or click Add to
+                        add a tag.</p>
+
+                    <div class="tag-input-wrapper">
+                        <input type="text" id="tagInput" class="form-control-custom tag-input"
+                            placeholder="Enter a tag (e.g., important, draft, review)">
+                        <button type="button" id="addTagBtn" class="btn-add-tag">Add Tag</button>
+                    </div>
+
+                    <div id="tagsContainer" class="tags-container">
+                        <!-- Tags will be added here dynamically -->
+                    </div>
+
+                    <!-- Hidden input to store tags as JSON for form submission -->
+                    <input type="hidden" id="tagsData" name="tags">
+
+                    <!-- Thymeleaf inline script to initialize tags from server -->
+                    <script th:inline="javascript">
+                        /*<![CDATA[*/
+                        // Initialize tags from server-side data
+                        window.initialDocumentTags = /*[[${document.tags}]]*/[];
+                        /*]]>*/
+                    </script>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-submit" type="submit"
+                        th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
+                        Create Document
+                    </button>
+                    <a href="/documents" class="btn-cancel">Cancel</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group row">
-            <input type="text" placeholder="Author" th:field="*{author}">
-        </div>
-        <div class="form-group row">
-            <button class="btn btn-info col-2" type="submit" th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
-                Create Document</button>
-        </div>
-    </form>
-</div>
-<div th:replace="layouts :: footer"></div>
+    </div>
+
+    <div th:replace="layouts :: footer"></div>
+
+    <!-- EasyMDE JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+
+    <!-- Document Form Handler (includes editor initialization and form submission) -->
+    <script th:src="@{/js/documentForm.js}"></script>
+
 
 </body>
 

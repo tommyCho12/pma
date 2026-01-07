@@ -51,9 +51,10 @@ public class DocumentService {
             return null; // Document not found
         }
 
-        // Preserve the ID and creation date
+        // Preserve the ID, Author and creation date
         updatedDocument.setId(id);
         updatedDocument.setCreatedDate(existingDoc.get().getCreatedDate());
+        updatedDocument.setAuthor(existingDoc.get().getAuthor());
         updatedDocument.setUpdatedDate(java.time.LocalDateTime.now());
 
         return repository.save(updatedDocument);

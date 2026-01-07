@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -21,6 +20,16 @@ public class DocumentApiController {
     // Create a new document
     @PostMapping
     public ResponseEntity<Document> createDocument(@RequestBody Document document) {
+        // Get the authenticated user and set as author
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder
+                .getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()
+                && !authentication.getPrincipal().equals("anonymousUser")) {
+            String username = authentication.getName();
+            document.setAuthor(username);
+        }
+
         Document savedDocument = documentService.save(document);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
     }
@@ -51,14 +60,30 @@ public class DocumentApiController {
 
     // Mark document as reviewed
     @PatchMapping("/{id}/review")
-    public ResponseEntity<Document> markAsReviewed(@PathVariable String id,
-            @RequestBody Map<String, String> reviewData) {
-        String reviewedBy = reviewData.get("reviewedBy");
-        if (reviewedBy == null || reviewedBy.trim().isEmpty()) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<Document> markAsReviewed(@PathVariable String id) {
+        // Get the authenticated user from Security context
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder
+                .getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Document reviewedDocument = documentService.markAsReviewed(id, reviewedBy);
+        // Get the UserDetails from authentication
+        org.springframework.security.core.userdetails.UserDetails userDetails = (org.springframework.security.core.userdetails.UserDetails) authentication
+                .getPrincipal();
+        String username = userDetails.getUsername();
+
+        // Check if user has REVIEWER permission
+        boolean hasReviewerPermission = userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("PERMISSION_REVIEWER"));
+
+        if (!hasReviewerPermission) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // Mark document as reviewed with the authenticated user's username
+        Document reviewedDocument = documentService.markAsReviewed(id, username);
         if (reviewedDocument == null) {
             return ResponseEntity.notFound().build();
         }

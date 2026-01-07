@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @org.springframework.data.mongodb.core.mapping.Document(collection = "documentsCollection")
-public class Document
-{
+public class Document {
     @Id
     private String id;
 
@@ -57,74 +56,65 @@ public class Document
         this.content = content;
     }
 
-
-    public String getAuthor()
-    {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author)
-    {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
-    public String getReviewer()
-    {
+    public String getReviewer() {
         return reviewer;
     }
 
-    public void setReviewer(String reviewer)
-    {
+    public void setReviewer(String reviewer) {
         this.reviewer = reviewer;
     }
 
-    public LocalDateTime getCreatedDate()
-    {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate)
-    {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getUpdatedDate()
-    {
+    public LocalDateTime getUpdatedDate() {
         return updatedDate;
     }
 
-    public void setUpdatedDate(LocalDateTime updatedDate)
-    {
+    public void setUpdatedDate(LocalDateTime updatedDate) {
         this.updatedDate = updatedDate;
     }
 
-    public LocalDateTime getReviewedDate()
-    {
+    public LocalDateTime getReviewedDate() {
         return reviewedDate;
     }
 
-    public void setReviewedDate(LocalDateTime reviewedDate)
-    {
+    public void setReviewedDate(LocalDateTime reviewedDate) {
         this.reviewedDate = reviewedDate;
     }
 
-    public List<String> getTags()
-    {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags)
-    {
+    public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    // Helper method to check if document is reviewed
+    public boolean isReviewed() {
+        return reviewedDate != null;
     }
 
     // Optional: toString, equals, hashCode
     @Override
     public String toString() {
         return "Document{" +
-            "id='" + id + '\'' +
-            ", content='" + content + '\'' +
-            '}';
+                "id='" + id + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }
-

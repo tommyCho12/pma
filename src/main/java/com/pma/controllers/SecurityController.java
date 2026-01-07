@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.validation.Valid;
 
 @Controller
-public class SecurityController
-{
+public class SecurityController {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -21,7 +20,7 @@ public class SecurityController
     UserAccountService userAccountService;
 
     @GetMapping("/register")
-    public String register(Model model){
+    public String register(Model model) {
         UserAccount userAccount = new UserAccount();
         model.addAttribute("userAccount", userAccount);
 
@@ -29,9 +28,9 @@ public class SecurityController
     }
 
     @PostMapping("/register/save")
-    public String saveUser(Model model, @Valid UserAccount user){
+    public String saveUser(Model model, @Valid UserAccount user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRole("ROLE_USER");
+        // New users are viewers by default (no permissions assigned)
         userAccountService.save(user);
 
         return "redirect:/";
