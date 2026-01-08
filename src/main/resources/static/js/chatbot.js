@@ -28,15 +28,11 @@ function sendMessage() {
     if (!text) return;
     addMessage('user', text);
     input.value = '';
-    setTimeout(() => addMessage('bot', 'This is a demo reply.'), 800);
+    callChatbot(text);
 }
 
 sendBtn.addEventListener('click', () => {
-    const text = input.value.trim();
-    if (!text) return;
-    addMessage('user', text);
-    input.value = '';
-    setTimeout(() => addMessage('bot', 'This is a demo reply.'), 800);
+    sendMessage();
 });
 
 // ✅ Send on Enter key
@@ -46,3 +42,18 @@ input.addEventListener('keydown', (e) => {
         sendMessage();
     }
 });
+
+function callChatbot(text) {
+    fetch('http://localhost:8000/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: text })
+    })
+        .then(response => response.json())
+        .then(data => {
+            addMessage('bot', data.message || JSON.stringify(data));
+        })
+        .catch(error => console.error('Error:', error));
+}
