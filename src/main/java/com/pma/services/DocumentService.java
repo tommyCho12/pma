@@ -2,6 +2,7 @@ package com.pma.services;
 
 import com.pma.dao.IDocumentRepository;
 import com.pma.entities.Document;
+import com.pma.services.ingestion.IngestionServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -16,6 +17,9 @@ public class DocumentService {
     @Autowired
     private DocumentIdGenerator idGenerator;
 
+    @Autowired
+    private IngestionServiceClient ingestionServiceClient;
+
     public List<Document> findAll() {
         return repository.findAll();
     }
@@ -26,16 +30,30 @@ public class DocumentService {
 
     public Document save(Document document) {
         // If creating new document (no ID), generate custom ID
-        if (document.getId() == null || document.getId().isEmpty()) {
+        boolean isNewDocument = document.getId() == null || document.getId().isEmpty();
+        if (isNewDocument) {
             document.setId(idGenerator.generateId());
             document.setCreatedDate(java.time.LocalDateTime.now());
         }
         document.setUpdatedDate(java.time.LocalDateTime.now());
-        return repository.save(document);
+        Document savedDocument = repository.save(document);
+
+        // Ingest document to external service asynchronously (only for new documents)
+        if (isNewDocument) {
+            ingestionServiceClient.ingestDocument(
+                    savedDocument.getId(),
+                    savedDocument.getTitle(),
+                    savedDocument.getContent());
+        }
+
+        return savedDocument;
     }
 
     public void deleteById(String id) {
         repository.deleteById(id);
+
+        // Delete from ingestion service asynchronously
+        ingestionServiceClient.deleteDocument(id);
     }
 
     public List<Document> search(String keyword) {
@@ -57,7 +75,15 @@ public class DocumentService {
         updatedDocument.setAuthor(existingDoc.get().getAuthor());
         updatedDocument.setUpdatedDate(java.time.LocalDateTime.now());
 
-        return repository.save(updatedDocument);
+        Document savedDocument = repository.save(updatedDocument);
+
+        // Update in ingestion service asynchronously (delete + re-ingest)
+        ingestionServiceClient.updateDocument(
+                savedDocument.getId(),
+                savedDocument.getTitle(),
+                savedDocument.getContent());
+
+        return savedDocument;
     }
 
     public Document markAsReviewed(String id, String reviewedBy) {

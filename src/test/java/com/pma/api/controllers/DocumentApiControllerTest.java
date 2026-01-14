@@ -2,6 +2,7 @@ package com.pma.api.controllers;
 
 import com.pma.entities.Document;
 import com.pma.services.DocumentService;
+import com.pma.services.ingestion.IngestionServiceClient;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.Before;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -27,6 +29,10 @@ public class DocumentApiControllerTest {
 
 	@Autowired
 	private DocumentService documentService;
+
+	// Mock the ingestion service client to prevent real HTTP calls during tests
+	@MockBean
+	private IngestionServiceClient ingestionServiceClient;
 
 	@Before
 	public void setUp() {
