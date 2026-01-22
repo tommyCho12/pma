@@ -132,10 +132,12 @@ function updateSelectedTagsDisplay() {
 
     selectedTags.forEach(tag => {
         const badge = document.createElement('span');
-        badge.className = 'selected-tag-badge';
+        badge.className = 'inline-flex items-center gap-2 px-2.5 py-1 bg-brand-500 text-white text-xs font-medium rounded-full';
         badge.innerHTML = `
             <span>${tag}</span>
-            <span class="selected-tag-remove" data-tag="${tag}">×</span>
+            <span class="selected-tag-remove hover:text-white/80 transition-colors cursor-pointer" data-tag="${tag}">
+                <i class="bi bi-x-lg text-[10px]"></i>
+            </span>
         `;
 
         badge.querySelector('.selected-tag-remove').addEventListener('click', (e) => {

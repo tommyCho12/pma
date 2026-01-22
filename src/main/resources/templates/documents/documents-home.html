@@ -46,8 +46,6 @@
                             class="absolute z-50 w-full mt-2 bg-surface-800 rounded-xl shadow-xl border border-surface-700 max-h-48 overflow-y-auto"
                             style="display: none;">
                         </div>
-                        <div id="selectedTagsDisplay" class="flex flex-wrap gap-2 mt-3" style="display: none;">
-                        </div>
                     </div>
                 </div>
 
@@ -59,14 +57,18 @@
                             <input type="checkbox" id="reviewedCheckbox" class="peer sr-only">
                             <div
                                 class="w-5 h-5 border-2 border-slate-600 rounded-md peer-checked:border-brand-500 peer-checked:bg-brand-500 transition-all duration-200 flex items-center justify-center">
-                                <i
-                                    class="bi bi-check text-white text-sm opacity-0 peer-checked:opacity-100 transition-opacity"></i>
                             </div>
+                            <i
+                                class="bi bi-check absolute inset-0 flex items-center justify-center text-white text-lg opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></i>
                         </div>
                         <span class="font-medium text-slate-300 group-hover:text-white transition-colors">Only
                             Reviewed</span>
                     </label>
                 </div>
+            </div>
+
+            <!-- Selected Tags Display (moved here to prevent layout shift) -->
+            <div id="selectedTagsDisplay" class="flex flex-wrap gap-2 mt-4" style="display: none;">
             </div>
 
             <!-- Search Bar -->
@@ -90,6 +92,48 @@
                 </div>
             </div>
         </div>
+
+        <style>
+            /* Tag Filter Dropdown Styles */
+            .tag-option {
+                padding: 10px 16px;
+                cursor: pointer;
+                color: #e2e8f0;
+                /* slate-200 */
+                transition: all 0.2s;
+            }
+
+            .tag-option:hover {
+                background-color: #334155;
+                /* surface-700 */
+                color: white;
+            }
+
+            .tag-option.selected {
+                background-color: #3b82f6;
+                /* brand-500 */
+                color: white;
+            }
+
+            .tag-option-empty {
+                padding: 10px 16px;
+                color: #94a3b8;
+                /* slate-400 */
+                font-style: italic;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-4px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
 
         <!-- Results Count -->
         <div id="resultsCount" class="text-sm text-slate-400 mb-4"></div>

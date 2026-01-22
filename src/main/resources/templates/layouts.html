@@ -63,19 +63,30 @@
 
     <!-- Navbar CSS - Override Bootstrap colors -->
     <style>
-        /* Force white text and blue hover for navbar links */
-        nav a {
+        /* Force white text for standard navbar links */
+        nav a.nav-link,
+        nav div.hidden a:not(.auth-btn) {
             color: white !important;
             text-decoration: none !important;
         }
 
-        nav a:hover {
+        /* Darker blue hover for regular nav links */
+        nav a.nav-link:hover,
+        nav div.hidden a:not(.auth-btn):hover {
             background-color: #1d4ed8 !important;
+            /* brand-700 */
             color: white !important;
         }
 
         .nav-link-active {
             background-color: #1d4ed8 !important;
+        }
+
+        /* Lighter blue hover for login/logout buttons as requested */
+        .auth-btn:hover {
+            background-color: #60a5fa !important;
+            /* brand-400 - lighter blue */
+            color: white !important;
         }
     </style>
 
@@ -130,14 +141,14 @@
                 <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
                     <span class="text-white/70 text-sm" sec:authentication="name"></span>
                     <a th:href="@{/logout}"
-                        class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg font-medium transition-all duration-200 flex items-center gap-2">
+                        class="auth-btn px-4 py-2 bg-brand-700 hover:bg-brand-500 text-white rounded-lg font-medium transition-all duration-200 flex items-center gap-2">
                         <i class="bi bi-box-arrow-right"></i>
                         Logout
                     </a>
                 </div>
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}"
-                        class="px-4 py-2 bg-white text-primary-600 hover:bg-primary-50 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                        class="auth-btn px-4 py-2 bg-brand-700 hover:bg-brand-500 text-white rounded-lg font-semibold transition-all duration-200 flex items-center gap-2">
                         <i class="bi bi-box-arrow-in-right"></i>
                         Log In
                     </a>
@@ -154,30 +165,30 @@
     </div>
 
     <!-- Mobile Navigation -->
-    <div id="mobile-menu" class="hidden md:hidden bg-primary-800/95 backdrop-blur-lg border-t border-white/10">
+    <div id="mobile-menu" class="hidden md:hidden bg-brand-800/95 backdrop-blur-lg border-t border-white/10">
         <div class="px-4 py-3 space-y-1">
             <a th:href="@{/}"
-                th:class="${#request.requestURI == '/'} ? 'block px-4 py-2 bg-white/20 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
+                th:class="${#request.requestURI == '/'} ? 'block px-4 py-2 bg-brand-700 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
                 Home
             </a>
             <a th:href="@{/employees}"
-                th:class="${#strings.startsWith(#request.requestURI, '/employees')} ? 'block px-4 py-2 bg-white/20 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
+                th:class="${#strings.startsWith(#request.requestURI, '/employees')} ? 'block px-4 py-2 bg-brand-700 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
                 Employees
             </a>
             <a th:href="@{/projects}"
-                th:class="${#strings.startsWith(#request.requestURI, '/projects') and !#strings.startsWith(#request.requestURI, '/projects/timelines')} ? 'block px-4 py-2 bg-white/20 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
+                th:class="${#strings.startsWith(#request.requestURI, '/projects') and !#strings.startsWith(#request.requestURI, '/projects/timelines')} ? 'block px-4 py-2 bg-brand-700 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
                 Projects
             </a>
             <a th:href="@{/projects/timelines}"
-                th:class="${#strings.startsWith(#request.requestURI, '/projects/timelines')} ? 'block px-4 py-2 bg-white/20 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
+                th:class="${#strings.startsWith(#request.requestURI, '/projects/timelines')} ? 'block px-4 py-2 bg-brand-700 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
                 Timelines
             </a>
             <a th:href="@{/documents}"
-                th:class="${#strings.startsWith(#request.requestURI, '/documents')} ? 'block px-4 py-2 bg-white/20 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
+                th:class="${#strings.startsWith(#request.requestURI, '/documents')} ? 'block px-4 py-2 bg-brand-700 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
                 Documents
             </a>
             <a th:href="@{/calculator}"
-                th:class="${#strings.startsWith(#request.requestURI, '/calculator')} ? 'block px-4 py-2 bg-white/20 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
+                th:class="${#strings.startsWith(#request.requestURI, '/calculator')} ? 'block px-4 py-2 bg-brand-700 text-white rounded-lg font-medium' : 'block px-4 py-2 text-white/90 hover:bg-white/10 rounded-lg font-medium'">
                 Calculator
             </a>
             <div class="border-t border-white/10 my-2 pt-2">
