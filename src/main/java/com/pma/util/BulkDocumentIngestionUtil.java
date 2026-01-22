@@ -7,15 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Utility script to bulk ingest all existing documents from the database
+ * Utility to bulk ingest all existing documents from the database
  * into the external ingestion service.
  * 
  * This is useful for:
@@ -23,13 +21,17 @@ import java.util.concurrent.TimeUnit;
  * - Re-indexing all documents after ingestion service updates
  * - Recovering from ingestion service failures
  * 
- * Usage:
- * Run this class as a Java application from your IDE, or via Maven:
+ * This utility is DISABLED by default. To enable it, set the following
+ * property in application.properties or as a command-line argument:
+ * 
+ * bulk.ingestion.enabled=true
+ * 
+ * Or via command line:
  * mvn spring-boot:run
- * -Dspring-boot.run.main-class=com.pma.util.BulkDocumentIngestionUtil
+ * -Dspring-boot.run.arguments="--bulk.ingestion.enabled=true"
  */
-@SpringBootApplication
-@ComponentScan(basePackages = "com.pma")
+@Component
+@ConditionalOnProperty(name = "bulk.ingestion.enabled", havingValue = "true", matchIfMissing = false)
 public class BulkDocumentIngestionUtil implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(BulkDocumentIngestionUtil.class);
@@ -39,11 +41,6 @@ public class BulkDocumentIngestionUtil implements CommandLineRunner {
 
     @Autowired
     private IngestionServiceClient ingestionServiceClient;
-
-    public static void main(String[] args) {
-        logger.info("Starting Bulk Document Ingestion Utility...");
-        SpringApplication.run(BulkDocumentIngestionUtil.class, args);
-    }
 
     @Override
     public void run(String... args) throws Exception {
