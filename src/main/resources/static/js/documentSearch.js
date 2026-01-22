@@ -213,7 +213,7 @@ function displayDocuments(documents, keyword = '') {
 // Create card for document
 function createDocumentCard(doc, keyword = '') {
     const card = document.createElement('div');
-    card.className = 'group bg-white rounded-2xl shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-slate-300/50 border border-slate-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 cursor-pointer';
+    card.className = 'group bg-surface-800 rounded-2xl shadow-lg hover:shadow-xl border border-surface-700 overflow-hidden transition-all duration-300 hover:-translate-y-1 cursor-pointer';
 
     card.onclick = (e) => {
         if (!e.target.closest('a') && !e.target.closest('button')) {
@@ -221,43 +221,37 @@ function createDocumentCard(doc, keyword = '') {
         }
     };
 
-    // Content preview
     const contentPreview = (doc.content || '').substring(0, 100);
     const truncated = (doc.content || '').length > 100 ? '...' : '';
 
-    // Review status badge
     const reviewBadge = doc.reviewedDate
-        ? '<span class="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full"><i class="bi bi-check-circle-fill"></i> Reviewed</span>'
-        : '<span class="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full"><i class="bi bi-clock"></i> Pending</span>';
+        ? '<span class="inline-flex items-center gap-1 px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full"><i class="bi bi-check-circle-fill"></i> Reviewed</span>'
+        : '<span class="inline-flex items-center gap-1 px-2 py-1 bg-amber-500/20 text-amber-400 text-xs font-medium rounded-full"><i class="bi bi-clock"></i> Pending</span>';
 
-    // Tags HTML
     let tagsHTML = '';
     if (doc.tags && doc.tags.length > 0) {
         tagsHTML = doc.tags.map(tag =>
-            `<span class="inline-block px-2 py-0.5 bg-gradient-to-r from-primary-500 to-accent-purple text-white text-xs font-medium rounded-full">${escapeHtml(tag)}</span>`
+            `<span class="inline-block px-2 py-0.5 bg-brand-500 text-white text-xs font-medium rounded-full">${escapeHtml(tag)}</span>`
         ).join('');
     }
 
-    // Actions HTML
     let actionsHTML = `
         <a href="/documents/view/${doc.id}" 
-           class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-primary-500 text-slate-700 hover:text-white font-medium rounded-lg transition-all duration-200"
+           class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-surface-700 hover:bg-brand-500 text-slate-300 hover:text-white font-medium rounded-lg transition-all duration-200"
            onclick="event.stopPropagation()">
-            <i class="bi bi-eye"></i>
-            View
+            <i class="bi bi-eye"></i> View
         </a>
     `;
 
     if (window.isUserAuthenticated) {
         actionsHTML += `
         <a href="/documents/update/${doc.id}" 
-           class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-amber-500 text-slate-700 hover:text-white font-medium rounded-lg transition-all duration-200"
+           class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-surface-700 hover:bg-amber-500 text-slate-300 hover:text-white font-medium rounded-lg transition-all duration-200"
            onclick="event.stopPropagation()">
-            <i class="bi bi-pencil"></i>
-            Edit
+            <i class="bi bi-pencil"></i> Edit
         </a>
         <button onclick="deleteDocument('${doc.id}', '${escapeHtml(doc.title)}'); event.stopPropagation();" 
-                class="p-2 bg-slate-100 hover:bg-red-500 text-slate-500 hover:text-white rounded-lg transition-all duration-200">
+                class="p-2 bg-surface-700 hover:bg-red-500 text-slate-400 hover:text-white rounded-lg transition-all duration-200">
             <i class="bi bi-trash"></i>
         </button>
         `;
@@ -265,29 +259,20 @@ function createDocumentCard(doc, keyword = '') {
 
     card.innerHTML = `
         <div class="p-6">
-            <!-- Header with ID and Review Status -->
             <div class="flex items-center justify-between mb-3">
-                <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-mono rounded-lg">${escapeHtml(doc.id)}</span>
+                <span class="px-2.5 py-1 bg-surface-900 text-slate-400 text-xs font-mono rounded-lg">${escapeHtml(doc.id)}</span>
                 ${reviewBadge}
             </div>
-            
-            <!-- Title -->
-            <h3 class="text-lg font-semibold text-slate-800 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+            <h3 class="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-brand-400 transition-colors">
                 ${highlightText(doc.title || 'Untitled', keyword)}
             </h3>
-            
-            <!-- Content Preview -->
-            <p class="text-slate-500 text-sm line-clamp-3 mb-4">
+            <p class="text-slate-400 text-sm line-clamp-3 mb-4">
                 ${highlightText(contentPreview + truncated, keyword)}
             </p>
-            
-            <!-- Tags -->
             <div class="flex flex-wrap gap-1.5 mb-4 min-h-[24px]">
                 ${tagsHTML}
             </div>
-            
-            <!-- Actions -->
-            <div class="flex items-center gap-2 pt-4 border-t border-slate-100">
+            <div class="flex items-center gap-2 pt-4 border-t border-surface-700">
                 ${actionsHTML}
             </div>
         </div>

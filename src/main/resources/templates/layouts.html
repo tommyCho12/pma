@@ -21,21 +21,23 @@
                         sans: ['Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        primary: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            800: '#3730a3',
-                            900: '#312e81',
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
                         },
-                        accent: {
-                            purple: '#764ba2',
-                            indigo: '#667eea',
+                        surface: {
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
                         }
                     }
                 }
@@ -59,10 +61,27 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+    <!-- Navbar CSS - Override Bootstrap colors -->
+    <style>
+        /* Force white text and blue hover for navbar links */
+        nav a {
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        nav a:hover {
+            background-color: #1d4ed8 !important;
+            color: white !important;
+        }
+
+        .nav-link-active {
+            background-color: #1d4ed8 !important;
+        }
+    </style>
+
 </head>
 
-<nav th:fragment="navbar"
-    class="bg-gradient-to-r from-primary-600 via-primary-700 to-accent-purple shadow-lg sticky top-0 z-50">
+<nav th:fragment="navbar" class="bg-brand-600 shadow-lg sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <!-- Logo/Brand -->
@@ -76,32 +95,32 @@
             <div class="hidden md:flex items-center gap-1">
                 <!-- Main Nav Links -->
                 <a th:href="@{/}" th:class="${#request.requestURI == '/'} ? 'nav-link-active' : 'nav-link'"
-                    class="px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all duration-200">
+                    class="px-4 py-2 text-white hover:bg-brand-700 rounded-lg font-medium transition-all duration-200">
                     Home
                 </a>
                 <a th:href="@{/employees}"
                     th:class="${#strings.startsWith(#request.requestURI, '/employees')} ? 'nav-link-active' : 'nav-link'"
-                    class="px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all duration-200">
+                    class="px-4 py-2 text-white hover:bg-brand-700 rounded-lg font-medium transition-all duration-200">
                     Employees
                 </a>
                 <a th:href="@{/projects}"
                     th:class="${#strings.startsWith(#request.requestURI, '/projects') and !#strings.startsWith(#request.requestURI, '/projects/timelines')} ? 'nav-link-active' : 'nav-link'"
-                    class="px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all duration-200">
+                    class="px-4 py-2 text-white hover:bg-brand-700 rounded-lg font-medium transition-all duration-200">
                     Projects
                 </a>
                 <a th:href="@{/projects/timelines}"
                     th:class="${#strings.startsWith(#request.requestURI, '/projects/timelines')} ? 'nav-link-active' : 'nav-link'"
-                    class="px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all duration-200">
+                    class="px-4 py-2 text-white hover:bg-brand-700 rounded-lg font-medium transition-all duration-200">
                     Timelines
                 </a>
                 <a th:href="@{/documents}"
                     th:class="${#strings.startsWith(#request.requestURI, '/documents')} ? 'nav-link-active' : 'nav-link'"
-                    class="px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all duration-200">
+                    class="px-4 py-2 text-white hover:bg-brand-700 rounded-lg font-medium transition-all duration-200">
                     Documents
                 </a>
                 <a th:href="@{/calculator}"
                     th:class="${#strings.startsWith(#request.requestURI, '/calculator')} ? 'nav-link-active' : 'nav-link'"
-                    class="px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all duration-200">
+                    class="px-4 py-2 text-white hover:bg-brand-700 rounded-lg font-medium transition-all duration-200">
                     Calculator
                 </a>
             </div>
@@ -178,17 +197,31 @@
     </div>
 </nav>
 
-<!-- Navbar active link styles -->
+<!-- Navbar styles - Override Bootstrap -->
 <style th:fragment="navbar-styles">
+    /* Override Bootstrap link colors for navbar */
+    nav a.nav-link,
+    nav a.nav-link-active,
+    nav .hidden a {
+        color: white !important;
+        text-decoration: none !important;
+    }
+
+    nav a.nav-link:hover,
+    nav .hidden a:hover {
+        background-color: #1d4ed8 !important;
+        /* brand-700 */
+        color: white !important;
+    }
+
     .nav-link-active {
-        background-color: rgba(255, 255, 255, 0.2);
-        color: white;
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
     }
 </style>
 
 <th:block th:fragment="footer">
-    <footer
-        class="fixed bottom-0 left-0 right-0 h-14 bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 text-white shadow-lg z-50">
+    <footer class="fixed bottom-0 left-0 right-0 h-14 bg-surface-900 text-white shadow-lg z-50">
         <div class="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
             <!-- Version -->
             <div class="text-slate-400 text-sm">
@@ -197,7 +230,7 @@
 
             <!-- Chat Toggle Button -->
             <button id="chat-toggle"
-                class="px-4 py-2 bg-gradient-to-r from-primary-500 to-accent-purple hover:from-primary-600 hover:to-purple-700 text-white font-medium rounded-lg shadow-lg shadow-primary-500/25 transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-lg shadow-lg transition-all duration-200 hover:scale-105 flex items-center gap-2">
                 <i class="bi bi-chat-dots"></i>
                 Chat
             </button>
@@ -205,11 +238,10 @@
 
         <!-- Chat Window -->
         <div id="chatbot-window"
-            class="fixed bottom-16 right-4 w-80 h-[420px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-[1100] hidden flex-col">
+            class="fixed bottom-16 right-4 w-80 h-[420px] bg-surface-800 rounded-2xl shadow-2xl border border-surface-700 overflow-hidden z-[1100] hidden flex-col">
 
             <!-- Chat header -->
-            <div
-                class="bg-gradient-to-r from-primary-500 to-accent-purple text-white px-4 py-3 flex items-center justify-between">
+            <div class="bg-brand-600 text-white px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="bi bi-robot text-lg"></i>
                     <span class="font-semibold">AI Assistant</span>
@@ -221,16 +253,16 @@
             </div>
 
             <!-- Chat content -->
-            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto text-sm text-slate-700 space-y-3"></div>
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto text-sm text-slate-300 space-y-3"></div>
 
             <!-- Chat input -->
-            <div class="p-3 border-t border-slate-200 bg-slate-50">
+            <div class="p-3 border-t border-surface-700 bg-surface-900">
                 <div class="flex gap-2">
                     <input type="text" id="chat-input"
-                        class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        class="flex-1 px-3 py-2 bg-surface-800 border border-surface-700 rounded-lg text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                         placeholder="Type your message...">
                     <button id="send-btn"
-                        class="px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-lg transition-all duration-200">
+                        class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-lg transition-all duration-200">
                         <i class="bi bi-send"></i>
                     </button>
                 </div>

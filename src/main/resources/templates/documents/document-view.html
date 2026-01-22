@@ -3,10 +3,9 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layouts/main}" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
-<head th:replace="layouts :: header">
-</head>
+<head th:replace="layouts :: header"></head>
 
-<body class="font-sans bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+<body class="font-sans bg-surface-900 min-h-screen">
     <nav th:replace="layouts :: navbar"></nav>
 
     <div layout:fragment="content">
@@ -14,191 +13,150 @@
 
             <!-- Loading Indicator -->
             <div id="loading" class="flex flex-col items-center justify-center py-20">
-                <div class="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-                <p class="mt-4 text-slate-500 font-medium">Loading document...</p>
+                <div class="w-12 h-12 border-4 border-brand-300 border-t-brand-600 rounded-full animate-spin"></div>
+                <p class="mt-4 text-slate-400 font-medium">Loading document...</p>
             </div>
 
             <!-- Error Message -->
-            <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mb-6">
-            </div>
+            <div id="errorMessage"
+                class="hidden bg-red-500/20 border border-red-500/50 text-red-400 rounded-xl p-4 mb-6"></div>
 
-            <!-- Document Container (hidden until loaded) -->
+            <!-- Document Container -->
             <div id="documentContainer" style="display: none;">
 
-                <!-- Back Button & Actions -->
+                <!-- Actions -->
                 <div class="flex flex-wrap items-center gap-3 mb-6">
                     <a href="/documents"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-medium rounded-xl border border-slate-200 shadow-sm transition-all duration-200 hover:shadow">
-                        <i class="bi bi-arrow-left"></i>
-                        Back to Documents
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-surface-800 hover:bg-surface-700 text-slate-300 font-medium rounded-xl border border-surface-700 transition-all duration-200">
+                        <i class="bi bi-arrow-left"></i> Back to Documents
                     </a>
-
                     <div class="flex-1"></div>
-
                     <a sec:authorize="isAuthenticated()" id="updateButton" href="#"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-xl shadow-lg shadow-primary-500/25 transition-all duration-200 hover:shadow-xl hover:scale-105">
-                        <i class="bi bi-pencil"></i>
-                        Edit Document
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-xl shadow-lg transition-all duration-200 hover:scale-105">
+                        <i class="bi bi-pencil"></i> Edit Document
                     </a>
-
                     <button sec:authorize="hasAuthority('PERMISSION_REVIEWER')" id="reviewButton"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-medium rounded-xl shadow-lg shadow-emerald-500/25 transition-all duration-200 hover:shadow-xl hover:scale-105">
-                        <i class="bi bi-check-circle"></i>
-                        Mark as Reviewed
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-xl shadow-lg transition-all duration-200 hover:scale-105">
+                        <i class="bi bi-check-circle"></i> Mark as Reviewed
                     </button>
-
                     <button onclick="window.print()"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-medium rounded-xl border border-slate-200 shadow-sm transition-all duration-200 hover:shadow">
-                        <i class="bi bi-printer"></i>
-                        Print
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-surface-800 hover:bg-surface-700 text-slate-300 font-medium rounded-xl border border-surface-700 transition-all duration-200">
+                        <i class="bi bi-printer"></i> Print
                     </button>
-
                     <a sec:authorize="isAuthenticated()" id="deleteButton" href="#"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium rounded-xl shadow-lg shadow-red-500/25 transition-all duration-200 hover:shadow-xl hover:scale-105">
-                        <i class="bi bi-trash"></i>
-                        Delete
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl shadow-lg transition-all duration-200 hover:scale-105">
+                        <i class="bi bi-trash"></i> Delete
                     </a>
                 </div>
 
                 <!-- Document Header -->
-                <div
-                    class="bg-gradient-to-br from-primary-600 via-primary-700 to-accent-purple rounded-2xl p-8 mb-8 shadow-xl shadow-primary-500/20">
-                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                        <div>
-                            <h1 id="documentTitle" class="text-3xl md:text-4xl font-bold text-white mb-3">Document Title
-                            </h1>
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-lg">
-                                <span class="text-white/70 text-sm">Document ID:</span>
-                                <code id="documentId" class="text-white font-mono text-sm">DOC-001</code>
-                            </div>
-                        </div>
+                <div class="bg-brand-600 rounded-2xl p-8 mb-8 shadow-xl">
+                    <h1 id="documentTitle" class="text-3xl md:text-4xl font-bold text-white mb-3">Document Title</h1>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                        <span class="text-white/70 text-sm">Document ID:</span>
+                        <code id="documentId" class="text-white font-mono text-sm">DOC-001</code>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Main Content Area -->
+                    <!-- Main Content -->
                     <div class="lg:col-span-2">
-                        <div
-                            class="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 overflow-hidden">
-                            <div
-                                class="px-6 py-4 bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200">
-                                <h2 class="text-lg font-semibold text-slate-700 flex items-center gap-2">
-                                    <i class="bi bi-file-text text-primary-500"></i>
-                                    Content
+                        <div class="bg-surface-800 rounded-2xl shadow-lg border border-surface-700 overflow-hidden">
+                            <div class="px-6 py-4 bg-surface-900 border-b border-surface-700">
+                                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                                    <i class="bi bi-file-text text-brand-400"></i> Content
                                 </h2>
                             </div>
-                            <div id="documentContent" class="p-6 prose prose-slate prose-lg max-w-none">
-                                Document content goes here...
-                            </div>
+                            <div id="documentContent" class="p-6 prose prose-invert max-w-none">Document content goes
+                                here...</div>
                         </div>
                     </div>
 
-                    <!-- Sidebar with Metadata -->
+                    <!-- Sidebar -->
                     <div class="lg:col-span-1">
                         <div
-                            class="bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg shadow-slate-200/50 border border-white/50 overflow-hidden sticky top-6">
-                            <div class="px-6 py-4 bg-gradient-to-r from-primary-500 to-accent-purple">
+                            class="bg-surface-800 rounded-2xl shadow-lg border border-surface-700 overflow-hidden sticky top-6">
+                            <div class="px-6 py-4 bg-brand-600">
                                 <h2 class="text-lg font-semibold text-white flex items-center gap-2">
-                                    <i class="bi bi-info-circle"></i>
-                                    Document Information
+                                    <i class="bi bi-info-circle"></i> Document Information
                                 </h2>
                             </div>
                             <div class="p-6 space-y-4">
-                                <!-- Title -->
                                 <div class="flex flex-col gap-1">
-                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">📝
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">📝
                                         Title</span>
-                                    <span id="documentTitleMeta" class="text-slate-700 font-medium">Title</span>
+                                    <span id="documentTitleMeta" class="text-slate-200 font-medium">Title</span>
                                 </div>
-
-                                <!-- Author -->
-                                <div class="flex flex-col gap-1 pb-4 border-b border-slate-100">
-                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">👤
+                                <div class="flex flex-col gap-1 pb-4 border-b border-surface-700">
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">👤
                                         Author</span>
-                                    <span id="documentAuthor" class="text-slate-700 font-medium">Unknown</span>
+                                    <span id="documentAuthor" class="text-slate-200 font-medium">Unknown</span>
                                 </div>
-
-                                <!-- Created -->
                                 <div class="flex flex-col gap-1">
-                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">📅
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">📅
                                         Created</span>
-                                    <span id="documentCreated" class="text-slate-700 font-medium">-</span>
+                                    <span id="documentCreated" class="text-slate-200 font-medium">-</span>
                                 </div>
-
-                                <!-- Last Updated -->
-                                <div class="flex flex-col gap-1 pb-4 border-b border-slate-100">
-                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">🔄 Last
+                                <div class="flex flex-col gap-1 pb-4 border-b border-surface-700">
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">🔄 Last
                                         Updated</span>
-                                    <span id="documentUpdated" class="text-slate-700 font-medium">-</span>
+                                    <span id="documentUpdated" class="text-slate-200 font-medium">-</span>
                                 </div>
-
-                                <!-- Tags Section -->
                                 <div id="documentTagsSection" style="display: none;"
-                                    class="flex flex-col gap-2 pb-4 border-b border-slate-100">
-                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">🏷️
+                                    class="flex flex-col gap-2 pb-4 border-b border-surface-700">
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">🏷️
                                         Tags</span>
-                                    <div id="documentTagsDisplay" class="flex flex-wrap gap-1.5">
-                                        <!-- Tags will be displayed here -->
-                                    </div>
+                                    <div id="documentTagsDisplay" class="flex flex-wrap gap-1.5"></div>
                                 </div>
-
-                                <!-- Review Status -->
                                 <div class="flex flex-col gap-1">
-                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">✅ Review
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">✅ Review
                                         Status</span>
-                                    <span id="documentReviewer" class="text-slate-700 font-medium"></span>
+                                    <span id="documentReviewer" class="text-slate-200 font-medium"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
-
         <div th:replace="layouts :: footer"></div>
     </div>
 
-    <!-- Marked.js for Markdown Rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-    <!-- Custom Document View Styles -->
     <style>
-        /* Prose overrides for markdown content */
+        #documentContent h1,
+        #documentContent h2,
+        #documentContent h3 {
+            color: white;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
         #documentContent h1 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #1e293b;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
         }
 
         #documentContent h2 {
             font-size: 1.25rem;
             font-weight: 600;
-            color: #1e293b;
-            margin-top: 1.25rem;
-            margin-bottom: 0.75rem;
         }
 
         #documentContent h3 {
             font-size: 1.125rem;
             font-weight: 600;
-            color: #334155;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
+            color: #e2e8f0;
         }
 
         #documentContent p {
-            color: #475569;
+            color: #94a3b8;
             line-height: 1.625;
             margin-bottom: 1rem;
         }
 
         #documentContent ul,
         #documentContent ol {
-            color: #475569;
+            color: #94a3b8;
             padding-left: 1.5rem;
             margin-bottom: 1rem;
         }
@@ -211,22 +169,17 @@
             list-style-type: decimal;
         }
 
-        #documentContent li {
-            margin-bottom: 0.25rem;
-        }
-
         #documentContent code {
-            background-color: #f1f5f9;
-            color: #4f46e5;
+            background-color: #1e293b;
+            color: #60a5fa;
             padding: 0.125rem 0.375rem;
             border-radius: 0.25rem;
             font-size: 0.875rem;
-            font-family: 'Courier New', monospace;
         }
 
         #documentContent pre {
-            background-color: #1e293b;
-            color: #f1f5f9;
+            background-color: #0f172a;
+            color: #e2e8f0;
             padding: 1rem;
             border-radius: 0.75rem;
             overflow-x: auto;
@@ -240,24 +193,17 @@
         }
 
         #documentContent blockquote {
-            border-left: 4px solid #a5b4fc;
-            background-color: #eef2ff;
-            padding-left: 1rem;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            color: #475569;
+            border-left: 4px solid #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+            padding: 0.5rem 1rem;
+            margin: 1rem 0;
+            color: #94a3b8;
             font-style: italic;
         }
 
         #documentContent a {
-            color: #4f46e5;
+            color: #60a5fa;
             text-decoration: underline;
-        }
-
-        #documentContent a:hover {
-            color: #4338ca;
         }
 
         #documentContent table {
@@ -268,50 +214,32 @@
 
         #documentContent th,
         #documentContent td {
-            border: 1px solid #e2e8f0;
+            border: 1px solid #334155;
             padding: 0.5rem 1rem;
             text-align: left;
         }
 
         #documentContent th {
-            background-color: #f1f5f9;
+            background-color: #1e293b;
             font-weight: 600;
+            color: white;
         }
 
-        /* Tag badges */
+        #documentContent td {
+            color: #94a3b8;
+        }
+
         .tag-badge-view {
             display: inline-block;
             padding: 0.25rem 0.625rem;
-            background: linear-gradient(135deg, #6366f1, #764ba2);
+            background: #3b82f6;
             color: white;
             font-size: 0.75rem;
             font-weight: 500;
             border-radius: 9999px;
         }
-
-        /* Print styles */
-        @media print {
-
-            .action-buttons,
-            nav,
-            footer,
-            .sticky {
-                display: none !important;
-            }
-
-            .lg\:col-span-2 {
-                grid-column: span 3 !important;
-            }
-
-            .bg-gradient-to-br {
-                background: #4f46e5 !important;
-            }
-        }
     </style>
-
-    <!-- Include document view handler -->
     <script th:src="@{/js/documentView.js}"></script>
-
 </body>
 
 </html>
