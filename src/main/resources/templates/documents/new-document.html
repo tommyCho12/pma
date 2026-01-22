@@ -5,53 +5,87 @@
 <head th:replace="layouts :: header">
 </head>
 
-<body>
+<body class="font-sans bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
     <nav th:replace="layouts :: navbar"></nav>
 
     <!-- EasyMDE CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
 
-    <!-- Document Form Styles -->
-    <link rel="stylesheet" th:href="@{/css/document-new.css}">
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
 
-
-    <div class="document-form-container">
-        <div class="page-header">
-            <h2 th:text="${document.id != null and document.id != ''} ? 'Edit Document' : 'Create New Document'">Create
-                New Document</h2>
-            <p>Use markdown formatting to create rich content</p>
+        <!-- Page Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <a href="/documents" class="p-2 hover:bg-white rounded-lg transition-colors">
+                    <i class="bi bi-arrow-left text-slate-500 hover:text-slate-700"></i>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-primary-600 to-accent-purple bg-clip-text text-transparent"
+                        th:text="${document.id != null and document.id != ''} ? 'Edit Document' : 'Create New Document'">
+                        Create New Document
+                    </h1>
+                    <p class="mt-1 text-slate-500">Use markdown formatting to create rich content</p>
+                </div>
+            </div>
         </div>
 
-        <div class="form-card">
-            <form id="documentForm" th:object="${document}">
+        <!-- Form Card -->
+        <div
+            class="bg-white/70 backdrop-blur-lg rounded-2xl shadow-xl shadow-slate-200/50 border border-white/50 overflow-hidden">
+            <form id="documentForm" th:object="${document}" class="divide-y divide-slate-100">
                 <input type="hidden" th:field="*{id}" th:if="${document.id != null and document.id != ''}" name="id">
 
-                <div class="form-group">
-                    <label class="form-label" for="documentTitle">Document Title *</label>
-                    <input type="text" id="documentTitle" class="form-control-custom" placeholder="Enter document title"
-                        th:field="*{title}" name="title" required>
+                <!-- Title Section -->
+                <div class="p-6">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2" for="documentTitle">
+                        Document Title <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="documentTitle"
+                        class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-100 transition-all duration-200"
+                        placeholder="Enter document title" th:field="*{title}" name="title" required>
                 </div>
 
-                <div class="editor-wrapper">
-                    <label class="editor-label" for="contentEditor">Content *</label>
-                    <textarea id="contentEditor" th:field="*{content}" name="content"></textarea>
-                    <p class="editor-hint">💡 Tip: Use the toolbar buttons or markdown syntax. Press preview to see how
-                        it looks.</p>
+                <!-- Content Editor Section -->
+                <div class="p-6">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2" for="contentEditor">
+                        Content <span class="text-red-500">*</span>
+                    </label>
+                    <div
+                        class="rounded-xl overflow-hidden border-2 border-slate-200 focus-within:border-primary-400 focus-within:ring-4 focus-within:ring-primary-100 transition-all duration-200">
+                        <textarea id="contentEditor" th:field="*{content}" name="content"></textarea>
+                    </div>
+                    <p class="mt-2 text-sm text-slate-500 flex items-center gap-2">
+                        <i class="bi bi-lightbulb text-amber-500"></i>
+                        Use the toolbar buttons or markdown syntax. Press preview to see how it looks.
+                    </p>
                 </div>
 
                 <!-- Tags Section -->
-                <div class="tags-section">
-                    <label class="form-label" for="tagInput">Tags</label>
-                    <p class="form-hint">Add tags to organize and categorize your document. Press Enter or click Add to
-                        add a tag.</p>
+                <div class="p-6">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1" for="tagInput">
+                        Tags
+                    </label>
+                    <p class="text-sm text-slate-500 mb-4">
+                        Add tags to organize and categorize your document. Press Enter or click Add to add a tag.
+                    </p>
 
-                    <div class="tag-input-wrapper">
-                        <input type="text" id="tagInput" class="form-control-custom tag-input"
-                            placeholder="Enter a tag (e.g., important, draft, review)">
-                        <button type="button" id="addTagBtn" class="btn-add-tag">Add Tag</button>
+                    <div class="flex gap-3 mb-4">
+                        <div class="flex-1 relative">
+                            <i class="bi bi-tag absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="tagInput"
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-100 transition-all duration-200"
+                                placeholder="Enter a tag (e.g., important, draft, review)">
+                        </div>
+                        <button type="button" id="addTagBtn"
+                            class="px-5 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 transition-all duration-200 hover:scale-105 hover:shadow-xl">
+                            <i class="bi bi-plus-lg mr-1"></i>
+                            Add Tag
+                        </button>
                     </div>
 
-                    <div id="tagsContainer" class="tags-container">
+                    <div id="tagsContainer"
+                        class="min-h-[60px] p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex flex-wrap gap-2 empty:before:content-['No_tags_added_yet._Add_tags_above_to_organize_your_document.'] empty:before:text-slate-400 empty:before:text-sm empty:before:italic">
                         <!-- Tags will be added here dynamically -->
                     </div>
 
@@ -67,12 +101,22 @@
                     </script>
                 </div>
 
-                <div class="button-group">
-                    <button class="btn-submit" type="submit"
-                        th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
-                        Create Document
-                    </button>
-                    <a href="/documents" class="btn-cancel">Cancel</a>
+                <!-- Action Buttons -->
+                <div class="p-6 bg-gradient-to-r from-slate-50 to-slate-100">
+                    <div class="flex flex-wrap gap-3">
+                        <button
+                            class="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/25 transition-all duration-200 hover:scale-105 hover:shadow-xl flex items-center gap-2"
+                            type="submit"
+                            th:text="${document.id != null and document.id != ''} ? 'Update Document' : 'Create Document'">
+                            <i class="bi bi-check-lg"></i>
+                            Create Document
+                        </button>
+                        <a href="/documents"
+                            class="px-6 py-3 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl border border-slate-200 shadow-sm transition-all duration-200 hover:shadow flex items-center gap-2">
+                            <i class="bi bi-x-lg"></i>
+                            Cancel
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -80,12 +124,92 @@
 
     <div th:replace="layouts :: footer"></div>
 
+    <!-- Custom Styles for Tags and Editor -->
+    <style>
+        /* EasyMDE Editor Customization */
+        .EasyMDEContainer .CodeMirror {
+            border: 0;
+            border-radius: 0;
+            background-color: white;
+            min-height: 300px;
+        }
+
+        .EasyMDEContainer .editor-toolbar {
+            border: 0;
+            border-bottom: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            border-radius: 0;
+        }
+
+        .EasyMDEContainer .editor-toolbar button {
+            color: #475569;
+            border-radius: 0.25rem;
+        }
+
+        .EasyMDEContainer .editor-toolbar button:hover {
+            background-color: #e2e8f0;
+        }
+
+        .EasyMDEContainer .editor-toolbar button.active {
+            background-color: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        /* Tag Badge Styles */
+        .tag-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background: linear-gradient(135deg, #6366f1, #764ba2);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            animation: tagFadeIn 0.3s ease;
+        }
+
+        .tag-badge:hover {
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+            transform: scale(1.05);
+            transition: all 0.2s;
+        }
+
+        .tag-remove {
+            width: 1.25rem;
+            height: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-remove:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+
+        @keyframes tagFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+
     <!-- EasyMDE JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 
     <!-- Document Form Handler (includes editor initialization and form submission) -->
     <script th:src="@{/js/documentForm.js}"></script>
-
 
 </body>
 

@@ -26,7 +26,7 @@ async function loadDocuments() {
         displayDocuments(allDocuments);
     } catch (error) {
         console.error('Error loading documents:', error);
-        documentsBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading documents</td></tr>';
+        documentsBody.innerHTML = '<div class="col-span-full text-center text-red-500 py-8">Error loading documents</div>';
     } finally {
         showLoading(false);
     }
@@ -180,19 +180,17 @@ function applyFilters() {
     displayDocuments(filtered, keyword);
 }
 
-// Display documents in table
+// Display documents as cards
 function displayDocuments(documents, keyword = '') {
     documentsBody.innerHTML = '';
 
     if (documents.length === 0) {
-        documentsTable.style.display = 'none';
-        noResults.style.display = 'block';
+        noResults.classList.remove('hidden');
         resultsCount.textContent = '';
         return;
     }
 
-    documentsTable.style.display = 'table';
-    noResults.style.display = 'none';
+    noResults.classList.add('hidden');
 
     // Update results count with filter information
     const filterDescriptions = [];
@@ -207,89 +205,95 @@ function displayDocuments(documents, keyword = '') {
     }
 
     documents.forEach(doc => {
-        const row = createDocumentRow(doc, keyword);
-        documentsBody.appendChild(row);
+        const card = createDocumentCard(doc, keyword);
+        documentsBody.appendChild(card);
     });
 }
 
-// Create table row for document
-function createDocumentRow(doc, keyword = '') {
-    const row = document.createElement('tr');
-    row.className = 'document-row';
-    row.style.cursor = 'pointer';
+// Create card for document
+function createDocumentCard(doc, keyword = '') {
+    const card = document.createElement('div');
+    card.className = 'group bg-white rounded-2xl shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-slate-300/50 border border-slate-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 cursor-pointer';
 
-    // Add reviewed row styling if document is reviewed
-    if (doc.reviewedDate) {
-        row.classList.add('reviewed-row');
-    }
-
-    row.onclick = () => {
-        window.location.href = `/documents/view/${doc.id}`;
+    card.onclick = (e) => {
+        if (!e.target.closest('a') && !e.target.closest('button')) {
+            window.location.href = `/documents/view/${doc.id}`;
+        }
     };
 
-    // Document ID with review checkmark if reviewed
-    const idCell = document.createElement('td');
-    const reviewCheckmark = doc.reviewedDate ? '<span class="review-checkmark">✅</span>' : '';
-    idCell.innerHTML = `${reviewCheckmark}<code>${doc.id}</code>`;
-    idCell.style.fontSize = '0.9rem';
+    // Content preview
+    const contentPreview = (doc.content || '').substring(0, 100);
+    const truncated = (doc.content || '').length > 100 ? '...' : '';
 
-    // Title with highlighting
-    const titleCell = document.createElement('td');
-    titleCell.innerHTML = highlightText(doc.title || 'Untitled', keyword);
+    // Review status badge
+    const reviewBadge = doc.reviewedDate
+        ? '<span class="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full"><i class="bi bi-check-circle-fill"></i> Reviewed</span>'
+        : '<span class="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full"><i class="bi bi-clock"></i> Pending</span>';
 
-    // Content preview with highlighting
-    const contentCell = document.createElement('td');
-    const contentPreview = (doc.content || '').substring(0, 150);
-    const truncated = (doc.content || '').length > 150 ? '...' : '';
-    contentCell.innerHTML = highlightText(contentPreview + truncated, keyword);
-    contentCell.style.color = '#6c757d';
-
-    // Tags
-    const tagsCell = document.createElement('td');
-    // Create badge for each tag
-    if (doc.tags) {
-        doc.tags.forEach(tag => {
-            const tagBadge = document.createElement('span');
-            tagBadge.className = 'tag-badge-view';
-            tagBadge.textContent = tag;
-            tagsCell.appendChild(tagBadge);
-        });
+    // Tags HTML
+    let tagsHTML = '';
+    if (doc.tags && doc.tags.length > 0) {
+        tagsHTML = doc.tags.map(tag =>
+            `<span class="inline-block px-2 py-0.5 bg-gradient-to-r from-primary-500 to-accent-purple text-white text-xs font-medium rounded-full">${escapeHtml(tag)}</span>`
+        ).join('');
     }
-    // Actions
-    const actionsCell = document.createElement('td');
 
+    // Actions HTML
     let actionsHTML = `
         <a href="/documents/view/${doc.id}" 
-           class="btn btn-sm btn-outline-info me-1"
+           class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-primary-500 text-slate-700 hover:text-white font-medium rounded-lg transition-all duration-200"
            onclick="event.stopPropagation()">
-            👁️ View
+            <i class="bi bi-eye"></i>
+            View
         </a>
     `;
 
-    // Only add Edit and Delete buttons if user is authenticated
     if (window.isUserAuthenticated) {
         actionsHTML += `
         <a href="/documents/update/${doc.id}" 
-           class="btn btn-sm btn-outline-primary me-1"
+           class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-amber-500 text-slate-700 hover:text-white font-medium rounded-lg transition-all duration-200"
            onclick="event.stopPropagation()">
-            ✏️ Edit
+            <i class="bi bi-pencil"></i>
+            Edit
         </a>
         <button onclick="deleteDocument('${doc.id}', '${escapeHtml(doc.title)}'); event.stopPropagation();" 
-                class="btn btn-sm btn-outline-danger">
-            🗑️ Delete
+                class="p-2 bg-slate-100 hover:bg-red-500 text-slate-500 hover:text-white rounded-lg transition-all duration-200">
+            <i class="bi bi-trash"></i>
         </button>
         `;
     }
 
-    actionsCell.innerHTML = actionsHTML;
+    card.innerHTML = `
+        <div class="p-6">
+            <!-- Header with ID and Review Status -->
+            <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-mono rounded-lg">${escapeHtml(doc.id)}</span>
+                ${reviewBadge}
+            </div>
+            
+            <!-- Title -->
+            <h3 class="text-lg font-semibold text-slate-800 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+                ${highlightText(doc.title || 'Untitled', keyword)}
+            </h3>
+            
+            <!-- Content Preview -->
+            <p class="text-slate-500 text-sm line-clamp-3 mb-4">
+                ${highlightText(contentPreview + truncated, keyword)}
+            </p>
+            
+            <!-- Tags -->
+            <div class="flex flex-wrap gap-1.5 mb-4 min-h-[24px]">
+                ${tagsHTML}
+            </div>
+            
+            <!-- Actions -->
+            <div class="flex items-center gap-2 pt-4 border-t border-slate-100">
+                ${actionsHTML}
+            </div>
+        </div>
+    `;
 
-    row.appendChild(idCell);
-    row.appendChild(titleCell);
-    row.appendChild(contentCell);
-    row.appendChild(tagsCell);
-    row.appendChild(actionsCell);
-
-    return row;
+    return card;
 }
 
 // Highlight matching text
@@ -298,7 +302,7 @@ function highlightText(text, keyword) {
 
     const escaped = escapeHtml(text);
     const regex = new RegExp(`(${escapeRegex(keyword)})`, 'gi');
-    return escaped.replace(regex, '<span class="highlight">$1</span>');
+    return escaped.replace(regex, '<mark class="bg-amber-200 text-amber-900 px-0.5 rounded">$1</mark>');
 }
 
 // Escape HTML to prevent XSS
